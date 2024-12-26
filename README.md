@@ -1,1 +1,1 @@
-# Photo_App
+# Sajin - Photo Management Application
