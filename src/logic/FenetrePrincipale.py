@@ -1,10 +1,7 @@
 import sys
-import typing
-import AutresFenetres
-from PyQt5 import QtCore
-from PyQt5.QtCore import Qt, QPoint
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QDialog, QGridLayout, QToolBar, QAction, QMenuBar
-from PyQt5.QtGui import QIcon, QFont, QPalette, QColor, QLinearGradient
+import logic.Tri as Tri
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QLabel, QToolBar, QAction
 
 
 class FenetrePrincipale(QMainWindow):
@@ -60,13 +57,13 @@ class FenetrePrincipale(QMainWindow):
 
     def ouvertureTri(self):
         self.hide()
-        self.autre_fenetre = AutresFenetres.Tri(self)
+        self.autre_fenetre = Tri.Tri(self)
         self.autre_fenetre.setGeometry(self.geometry().x(), self.geometry().y(), self.geometry().width(), self.geometry().height())
         self.autre_fenetre.show()
 
     def ouvertureRenommage(self):
         self.hide()
-        self.autre_fenetre = AutresFenetres.Renommage(self)
+        self.autre_fenetre = Tri.Renommage(self)
         self.autre_fenetre.setGeometry(self.geometry().x(), self.geometry().y(), self.geometry().width(), self.geometry().height())
         self.autre_fenetre.show()
 

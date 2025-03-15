@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>Homepage</class>
+ <widget class="QMainWindow" name="Homepage">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>861</width>
-    <height>377</height>
+    <width>723</width>
+    <height>495</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -222,6 +222,12 @@ QPushButton{
     </item>
     <item>
      <widget class="QWidget" name="partiePrincipale" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <property name="leftMargin">
         <number>10</number>
@@ -261,14 +267,14 @@ QPushButton{
             <property name="font">
              <font>
               <family>Savoye LET</family>
-              <pointsize>45</pointsize>
+              <pointsize>69</pointsize>
               <weight>50</weight>
               <italic>true</italic>
               <bold>false</bold>
              </font>
             </property>
             <property name="text">
-             <string>@leovallat.ph' app</string>
+             <string>Sajin</string>
             </property>
             <property name="textFormat">
              <enum>Qt::AutoText</enum>
@@ -281,8 +287,14 @@ QPushButton{
          </layout>
         </widget>
        </item>
-       <item>
+       <item alignment="Qt::AlignHCenter">
         <widget class="QWidget" name="frameCartes" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <layout class="QHBoxLayout" name="horizontalLayout_7">
           <property name="spacing">
            <number>20</number>
@@ -301,6 +313,12 @@ QPushButton{
           </property>
           <item>
            <widget class="QFrame" name="carte1">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimumSize">
              <size>
               <width>160</width>
@@ -352,6 +370,12 @@ QPushButton{
           </item>
           <item>
            <widget class="QFrame" name="carte2">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimumSize">
              <size>
               <width>160</width>
@@ -403,6 +427,12 @@ QPushButton{
           </item>
           <item>
            <widget class="QFrame" name="carte3">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimumSize">
              <size>
               <width>160</width>
@@ -452,297 +482,24 @@ QPushButton{
             </layout>
            </widget>
           </item>
-          <item>
-           <widget class="QFrame" name="carte4">
-            <property name="minimumSize">
-             <size>
-              <width>160</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout_5">
-             <item alignment="Qt::AlignTop">
-              <widget class="QFrame" name="frameCarte4">
-               <property name="frameShape">
-                <enum>QFrame::StyledPanel</enum>
-               </property>
-               <property name="frameShadow">
-                <enum>QFrame::Raised</enum>
-               </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_11">
-                <item>
-                 <widget class="QLabel" name="labelDisplayCarte4">
-                  <property name="font">
-                   <font>
-                    <pointsize>14</pointsize>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>ZETA</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item alignment="Qt::AlignTop">
-              <widget class="QLabel" name="labelCarte4">
-               <property name="text">
-                <string>Photos prisent depuis 1 an</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
          </layout>
         </widget>
        </item>
        <item>
-        <widget class="QWidget" name="framePrincipale" native="true">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_12">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>10</number>
-          </property>
-          <item>
-           <widget class="QWidget" name="widgetInstagram" native="true">
-            <layout class="QVBoxLayout" name="verticalLayout_6">
-             <property name="leftMargin">
-              <number>12</number>
-             </property>
-             <property name="topMargin">
-              <number>12</number>
-             </property>
-             <property name="rightMargin">
-              <number>12</number>
-             </property>
-             <property name="bottomMargin">
-              <number>12</number>
-             </property>
-             <item alignment="Qt::AlignTop">
-              <widget class="QFrame" name="frameInstagramHaut">
-               <property name="frameShape">
-                <enum>QFrame::StyledPanel</enum>
-               </property>
-               <property name="frameShadow">
-                <enum>QFrame::Raised</enum>
-               </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_5">
-                <property name="leftMargin">
-                 <number>0</number>
-                </property>
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <property name="rightMargin">
-                 <number>0</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <widget class="QLabel" name="labelInstagram">
-                  <property name="font">
-                   <font>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Instagram</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="ajouterInstaBtn">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <pointsize>16</pointsize>
-                    <weight>75</weight>
-                    <italic>false</italic>
-                    <bold>true</bold>
-                    <underline>false</underline>
-                    <strikeout>false</strikeout>
-                    <kerning>true</kerning>
-                   </font>
-                  </property>
-                  <property name="cursor">
-                   <cursorShape>ArrowCursor</cursorShape>
-                  </property>
-                  <property name="text">
-                   <string>  +  </string>
-                  </property>
-                  <property name="iconSize">
-                   <size>
-                    <width>20</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <widget class="QFrame" name="frameInstagramBas">
-               <property name="frameShape">
-                <enum>QFrame::StyledPanel</enum>
-               </property>
-               <property name="frameShadow">
-                <enum>QFrame::Raised</enum>
-               </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_3">
-                <item>
-                 <widget class="QListWidget" name="listWidgetInstagram"/>
-                </item>
-                <item>
-                 <widget class="QSlider" name="verticalSliderInstagram">
-                  <property name="orientation">
-                   <enum>Qt::Vertical</enum>
-                  </property>
-                  <property name="invertedAppearance">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QWidget" name="widgetEvenement" native="true">
-            <layout class="QVBoxLayout" name="verticalLayout_8">
-             <item alignment="Qt::AlignTop">
-              <widget class="QFrame" name="frameEvenementHaut">
-               <property name="frameShape">
-                <enum>QFrame::StyledPanel</enum>
-               </property>
-               <property name="frameShadow">
-                <enum>QFrame::Raised</enum>
-               </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_6">
-                <property name="leftMargin">
-                 <number>0</number>
-                </property>
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <property name="rightMargin">
-                 <number>0</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <widget class="QLabel" name="labelEvenement">
-                  <property name="font">
-                   <font>
-                    <weight>75</weight>
-                    <bold>true</bold>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>Evènements</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="ajouterEventBtn">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <pointsize>16</pointsize>
-                    <weight>75</weight>
-                    <italic>false</italic>
-                    <bold>true</bold>
-                    <underline>false</underline>
-                    <strikeout>false</strikeout>
-                    <kerning>true</kerning>
-                   </font>
-                  </property>
-                  <property name="cursor">
-                   <cursorShape>ArrowCursor</cursorShape>
-                  </property>
-                  <property name="text">
-                   <string>  +  </string>
-                  </property>
-                  <property name="iconSize">
-                   <size>
-                    <width>20</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <widget class="QFrame" name="frameEvenementBas">
-               <property name="frameShape">
-                <enum>QFrame::StyledPanel</enum>
-               </property>
-               <property name="frameShadow">
-                <enum>QFrame::Raised</enum>
-               </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_13">
-                <item>
-                 <widget class="QListWidget" name="listWidgetEvenement"/>
-                </item>
-                <item>
-                 <widget class="QSlider" name="verticalSliderEvenement">
-                  <property name="orientation">
-                   <enum>Qt::Vertical</enum>
-                  </property>
-                  <property name="invertedAppearance">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-         </layout>
-        </widget>
+         <property name="sizeType">
+          <enum>QSizePolicy::Expanding</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>

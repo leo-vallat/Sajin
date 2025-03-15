@@ -1,6 +1,6 @@
 from FenetrePrincipale import FenetrePrincipale
 from PyQt5.QtCore import QEventLoop, QTimer
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit, QDialog, QGridLayout, QToolBar, QAction, QMenuBar
+from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit
 from os import remove, mkdir, path
 from shutil import copy
 from glob import glob
@@ -66,10 +66,10 @@ class Tri(FenetrePrincipale):
         for pathPhoto in fPathSD :															#Itérations sur tous les chemins
             
             if pathPhoto[-1] == 'G' : 														#Condition de tri d'un JPEG
-                copy(pathPhoto, '/Users/leopold 1/Desktop/Photo/Jpeg/' + pathPhoto[-12:]) 	#Enregistrement dans le bon dossier
+                copy(pathPhoto, '/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Jpeg/' + pathPhoto[-12:]) 	#Enregistrement dans le bon dossier
             
             else : 
-                copy(pathPhoto, '/Users/leopold 1/Desktop/Photo/Raw/' + pathPhoto[-12:])
+                copy(pathPhoto, '/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Raw/' + pathPhoto[-12:])
         self.labelEtat.setText("séparation ok")
         self.timer.start(3000)
 
@@ -77,8 +77,8 @@ class Tri(FenetrePrincipale):
     def coherence(self) :
         self.labelEtat.setText("mise en cohérence en cours ...")
 
-        fPathJ = list(glob('/Users/leopold 1/Desktop/Photo/Jpeg/*'))
-        fPathR = list(glob('/Users/leopold 1/Desktop/Photo/Raw/*'))
+        fPathJ = list(glob('/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Jpeg/*'))
+        fPathR = list(glob('/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Raw/*'))
 
         for pathPhotoR in fPathR :															#Itération sur chaque éléments des deux listes (correspondant à chaque photo)
             garder = False 																	#Condition de garder une photo
@@ -109,8 +109,8 @@ class Tri(FenetrePrincipale):
         evnmt = self.evenementEdit.text()
         self.labelEtat.setText("rangement en cours ...")
         
-        fPathJ = list(glob('/Users/leopold 1/Desktop/Photo/Jpeg/*'))
-        fPathR = list(glob('/Users/leopold 1/Desktop/Photo/Raw/*'))
+        fPathJ = list(glob('/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Jpeg/*'))
+        fPathR = list(glob('/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Raw/*'))
 
         lDir = ['/OG', '/RT', '/OG/JPEG', '/OG/RAW']
         lMonth = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
@@ -162,8 +162,8 @@ class Tri(FenetrePrincipale):
     def suppression(self, fPathSD) :
         self.labelEtat.setText("Suppression en cours ...")
 
-        fPathJ = list(glob('/Users/leopold 1/Desktop/Photo/Jpeg/*'))
-        fPathR = list(glob('/Users/leopold 1/Desktop/Photo/Raw/*'))
+        fPathJ = list(glob('/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Jpeg/*'))
+        fPathR = list(glob('/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Raw/*'))
 
         lPath = [fPathSD, fPathJ, fPathR]
         ls = ['SD', 'jpeg', 'raw']
@@ -178,7 +178,7 @@ class Tri(FenetrePrincipale):
 
 
     def getPathPhoto(self,path) :     
-        return '/Volumes/Andúril Prod/Photo/' + path 
+        return '/Volumes/Andúril/Prod/Photo/' + path 
 
 
     def getPathEvnmt(self, year, monthLetter, month, day, evnmt) :     
@@ -191,10 +191,3 @@ class Tri(FenetrePrincipale):
 
     def finTimer(self):
         self.labelEtat.setText("")
-
-
-
-class Renommage(FenetrePrincipale):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        return None
