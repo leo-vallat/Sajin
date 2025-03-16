@@ -19,7 +19,7 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="widgetCentral">
+  <widget class="QWidget" name="centralWidget">
    <property name="styleSheet">
     <string notr="true">*{
 	color:#000;
@@ -29,7 +29,7 @@ QPushButton{
 	padding: 9px 5px;
 	text-align: left;
 }
-#menuGauche{
+#sidebarWidget{
 	background-color: #65132d;
 }
 #triBtn{
@@ -41,7 +41,7 @@ QPushButton{
 #reglagesBtn, #renommageBtn, #sauvegardeBtn, #accueilBtn{
 	color: #ffffff;
 }
-#partiePrincipale{
+#bodyWidget{
 	background-color: #e5e5e5;
 }
 #separationBtn, #coherenceBtn, #rangementBtn, #suppressionBtn{
@@ -55,21 +55,14 @@ QPushButton{
 	color: white;
 	text-align: center;
 }
-#widgetReglages{
+#settingsWidget{
 	background-color:#ffffff;
 	border-radius:10px;
-}
-#saveBtn{
-	border: 2px solid #e5e5e5;
-	border-radius: 10px;
-}
-#saveBtn:pressed{
-	background-color: #e5e5e5;
 }
 #progressBar{
 	background-color: #e5e5e5;
 }
-#lineNomEvent, #lineNumPhotos{
+#eventNameLine, #nPicLine, #dateEdit{
 	border: 1px solid #e5e5e5;
 	border-radius: 4px;
 }</string>
@@ -91,7 +84,7 @@ QPushButton{
      <number>0</number>
     </property>
     <item>
-     <widget class="QWidget" name="menuGauche" native="true">
+     <widget class="QWidget" name="sidebarWidget" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -115,7 +108,7 @@ QPushButton{
         <number>0</number>
        </property>
        <item alignment="Qt::AlignTop">
-        <widget class="QFrame" name="frameMenu">
+        <widget class="QFrame" name="menuFrame">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -233,7 +226,7 @@ QPushButton{
      </widget>
     </item>
     <item>
-     <widget class="QWidget" name="partiePrincipale" native="true">
+     <widget class="QWidget" name="bodyWidget" native="true">
       <layout class="QVBoxLayout" name="verticalLayout">
        <property name="leftMargin">
         <number>10</number>
@@ -248,7 +241,7 @@ QPushButton{
         <number>10</number>
        </property>
        <item>
-        <widget class="QWidget" name="widgetEnTete" native="true">
+        <widget class="QWidget" name="headerWidget" native="true">
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <property name="leftMargin">
            <number>0</number>
@@ -263,7 +256,7 @@ QPushButton{
            <number>0</number>
           </property>
           <item alignment="Qt::AlignHCenter">
-           <widget class="QLabel" name="labelEnTete">
+           <widget class="QLabel" name="headerLabel">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -407,7 +400,7 @@ QPushButton{
         </widget>
        </item>
        <item>
-        <widget class="QWidget" name="widgetPrincipal" native="true">
+        <widget class="QWidget" name="tidyingWidget" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -428,7 +421,7 @@ QPushButton{
            <number>0</number>
           </property>
           <item>
-           <widget class="QWidget" name="widgetReglages" native="true">
+           <widget class="QWidget" name="settingsWidget" native="true">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -452,7 +445,7 @@ QPushButton{
               <number>17</number>
              </property>
              <item row="1" column="0">
-              <widget class="QFrame" name="frameReglagesGauche">
+              <widget class="QFrame" name="settingsFrame">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                  <horstretch>0</horstretch>
@@ -482,7 +475,7 @@ QPushButton{
                  <number>12</number>
                 </property>
                 <item>
-                 <widget class="QLineEdit" name="lineNomEvent">
+                 <widget class="QLineEdit" name="eventNameLine">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -504,7 +497,7 @@ QPushButton{
                  </widget>
                 </item>
                 <item>
-                 <widget class="QCheckBox" name="checkBox">
+                 <widget class="QCheckBox" name="modeCheckBox">
                   <property name="text">
                    <string>Mode Manuel</string>
                   </property>
@@ -518,7 +511,7 @@ QPushButton{
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="lineNumPhotos">
+                 <widget class="QLineEdit" name="nPicLine">
                   <property name="enabled">
                    <bool>true</bool>
                   </property>

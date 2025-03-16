@@ -1,11 +1,22 @@
-from FenetrePrincipale import FenetrePrincipale
+from src.ui.sortingPage import Ui_SortingPage
 from PyQt5.QtCore import QEventLoop, QTimer
-from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit
 from os import remove, mkdir, path
 from shutil import copy
 from glob import glob
 from PIL import Image, ExifTags
 
+
+class SortingPage(QMainWindow):
+    """Page de tri"""
+    def __init__(self, stacked_widget):
+        super().__init__()
+        self.ui = Ui_SortingPage()
+        self.ui.setupUi(self)
+        self.ui.accueilBtn.clicked.connect(lambda: stacked_widget.setCurrentIndex(0))
+
+
+'''
 class Tri(FenetrePrincipale):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -191,3 +202,4 @@ class Tri(FenetrePrincipale):
 
     def finTimer(self):
         self.labelEtat.setText("")
+'''
