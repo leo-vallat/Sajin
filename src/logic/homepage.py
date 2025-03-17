@@ -16,7 +16,7 @@ class HomePage(QMainWindow):
         self.ui.card1InfoLabel.setText(storage_data[0])
         self.ui.card2InfoLabel.setText(storage_data[1])
         self.ui.card3InfoLabel.setText(storage_data[2])
-        
+
         print("homepage initialized")
     
     def reset_ui(self):

@@ -18,6 +18,8 @@ class SortingPage(QMainWindow):
         self.ui.modeCheckBox.setChecked(False)
         self.ui.dateEdit.setVisible(False)
         self.ui.nPicLine.setVisible(False)
+        self.ui.statelabel.setVisible(False)
+        self.ui.progressBar.setVisible(False)
 
         self.ui.modeCheckBox.stateChanged.connect(self.toggle_widgets)
     #     self.ui.separationBtn.clicked.connect(lambda: self.separation)
@@ -31,6 +33,12 @@ class SortingPage(QMainWindow):
         is_checked = state==2
         self.ui.dateEdit.setVisible(is_checked)
         self.ui.nPicLine.setVisible(is_checked)
+
+        self.ui.statelabel.setVisible(is_checked)
+        self.ui.progressBar.setVisible(is_checked)
+        
+
+        self.adjustSize()            
 
     # def separation(self) :
     #     self.ui.statelabel.setText("séparation en cours ...")
