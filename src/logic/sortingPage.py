@@ -1,8 +1,9 @@
 import datetime
+from dotenv import load_dotenv
 from src.ui.sortingPage import Ui_SortingPage
 from PyQt5.QtCore import pyqtSlot, QEventLoop, QTimer
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit
-from os import remove, mkdir, path
+from os import remove, mkdir, path, getenv
 from shutil import copy
 from glob import glob
 # from PIL import Image, ExifTags
@@ -12,6 +13,10 @@ class SortingPage(QMainWindow):
     """Sorting Page"""
     def __init__(self, stacked_widget):
         super().__init__()
+        load_dotenv('.env')
+        RAW_FOLDER_PATH = getenv("RAW_FOLDER_PATH")
+        JPEG_FOLDER_PATH = getenv("JPEG_FOLDER_PATH")
+        
         self.ui = Ui_SortingPage()
         self.ui.setupUi(self)
         self.ui.accueilBtn.clicked.connect(lambda: stacked_widget.setCurrentIndex(0))
@@ -25,6 +30,7 @@ class SortingPage(QMainWindow):
         self.ui.modeCheckBox.stateChanged.connect(self.toggle_widgets)
 
         self.ui.dateEdit.setDate(datetime.date.today())
+
     #     self.ui.separationBtn.clicked.connect(lambda: self.separation)
     #     self.ui.coherenceBtn.clicked.connect(lambda: self.coherence)
     #     self.ui.rangementBtn.clicked.connect(lambda: self.rangement)
