@@ -305,9 +305,9 @@ class Ui_SortingPage(object):
         self.gridLayout_2.addWidget(self.labelReglages, 0, 0, 1, 1, QtCore.Qt.AlignTop)
         self.horizontalLayout_12.addWidget(self.settingsWidget)
         self.verticalLayout.addWidget(self.tidyingWidget)
-        self.Statelabel = QtWidgets.QLabel(self.bodyWidget)
-        self.Statelabel.setObjectName("Statelabel")
-        self.verticalLayout.addWidget(self.Statelabel)
+        self.statelabel = QtWidgets.QLabel(self.bodyWidget)
+        self.statelabel.setObjectName("statelabel")
+        self.verticalLayout.addWidget(self.statelabel)
         self.progressBar = QtWidgets.QProgressBar(self.bodyWidget)
         font = QtGui.QFont()
         font.setPointSize(13)
@@ -341,7 +341,7 @@ class Ui_SortingPage(object):
         self.modeCheckBox.setText(_translate("SortingPage", "Mode Manuel"))
         self.nPicLine.setPlaceholderText(_translate("SortingPage", "  Num des photos ( - )"))
         self.labelReglages.setText(_translate("SortingPage", "Réglages de rangement"))
-        self.Statelabel.setText(_translate("SortingPage", "TextLabel"))
+        self.statelabel.setText(_translate("SortingPage", "TextLabel"))
 
 
 if __name__ == "__main__":

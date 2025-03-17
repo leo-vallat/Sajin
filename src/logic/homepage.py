@@ -1,27 +1,31 @@
 import json
 import os
 import sys
-
 from src.ui.homepage import Ui_Homepage
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QLabel, QToolBar, QAction
-
 
 class HomePage(QMainWindow):
     """Page d'accueil"""
     def __init__(self, stacked_widget):
         super().__init__()
-        print('Initialize homepage')
         self.ui = Ui_Homepage()
         self.ui.setupUi(self)
         self.ui.triBtn.clicked.connect(lambda: stacked_widget.setCurrentIndex(1))
         storage_data = self.get_storage_data()
-        print(f"storage data : {storage_data}")
         self.ui.card1InfoLabel.setText(storage_data[0])
         self.ui.card2InfoLabel.setText(storage_data[1])
         self.ui.card3InfoLabel.setText(storage_data[2])
+        
         print("homepage initialized")
     
+    def reset_ui(self):
+        '''Set text Edit to updated storage values'''
+        storage_data = self.get_storage_data()
+        self.ui.card1InfoLabel.setText(storage_data[0])
+        self.ui.card2InfoLabel.setText(storage_data[1])
+        self.ui.card3InfoLabel.setText(storage_data[2])     
+
     def get_storage_data(self):
         '''Get the number of photos stored at camera_storage paths'''
         nPic = 0
@@ -32,14 +36,13 @@ class HomePage(QMainWindow):
             camera_storage = json.load(f)
         
         active_storage_path = [path for path in camera_storage['external_storage'] if os.path.exists(path)]
-        print(f"Active Storage Path : {active_storage_path}")
+
+        # Working for Sony environment
         for path in active_storage_path:
             DCIM_path = os.path.join(path, 'DCIM')
-            print(f"DCIM Path : {DCIM_path}")
             pic_folder = [d for d in os.listdir(DCIM_path) if os.path.isdir(os.path.join(DCIM_path, d))]
             for folder in pic_folder:
                 folder_path = os.path.join(DCIM_path, folder)
-                print(f"Folder path : {folder_path}")
                 for file in os.listdir(folder_path):
                     if file.endswith(('.ARW', '.NEF', '.CR3')):
                         nRAW += 1
