@@ -1,3 +1,4 @@
+import datetime
 from src.ui.sortingPage import Ui_SortingPage
 from PyQt5.QtCore import pyqtSlot, QEventLoop, QTimer
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit
@@ -8,7 +9,7 @@ from glob import glob
 
 
 class SortingPage(QMainWindow):
-    """Page de tri"""
+    """Sorting Page"""
     def __init__(self, stacked_widget):
         super().__init__()
         self.ui = Ui_SortingPage()
@@ -22,6 +23,8 @@ class SortingPage(QMainWindow):
         self.ui.progressBar.setVisible(False)
 
         self.ui.modeCheckBox.stateChanged.connect(self.toggle_widgets)
+
+        self.ui.dateEdit.setDate(datetime.date.today())
     #     self.ui.separationBtn.clicked.connect(lambda: self.separation)
     #     self.ui.coherenceBtn.clicked.connect(lambda: self.coherence)
     #     self.ui.rangementBtn.clicked.connect(lambda: self.rangement)
@@ -38,7 +41,7 @@ class SortingPage(QMainWindow):
         self.ui.progressBar.setVisible(is_checked)
         
 
-        self.adjustSize()            
+        # self.adjustSize()            
 
     # def separation(self) :
     #     self.ui.statelabel.setText("séparation en cours ...")
