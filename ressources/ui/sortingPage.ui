@@ -318,7 +318,7 @@ QPushButton{
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>82</height>
+           <height>129</height>
           </size>
          </property>
          <property name="frameShape">
@@ -327,32 +327,32 @@ QPushButton{
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QGridLayout" name="gridLayout">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
           <property name="leftMargin">
-           <number>50</number>
+           <number>120</number>
           </property>
           <property name="topMargin">
            <number>0</number>
           </property>
           <property name="rightMargin">
-           <number>50</number>
+           <number>120</number>
           </property>
           <property name="bottomMargin">
            <number>0</number>
           </property>
-          <property name="horizontalSpacing">
-           <number>100</number>
-          </property>
-          <property name="verticalSpacing">
-           <number>12</number>
-          </property>
-          <item row="0" column="0">
+          <item>
            <widget class="QPushButton" name="separationBtn">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
             </property>
             <property name="font">
              <font>
@@ -366,33 +366,7 @@ QPushButton{
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QPushButton" name="coherenceBtn">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>14</pointsize>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="text">
-             <string>Cohérence</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
+          <item>
            <widget class="QPushButton" name="rangementBtn">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -412,7 +386,7 @@ QPushButton{
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item>
            <widget class="QPushButton" name="suppressionBtn">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -448,7 +422,7 @@ QPushButton{
            <number>0</number>
           </property>
           <property name="topMargin">
-           <number>49</number>
+           <number>20</number>
           </property>
           <property name="rightMargin">
            <number>0</number>
