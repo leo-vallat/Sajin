@@ -1,6 +1,7 @@
 import datetime
 from dotenv import load_dotenv
 from src.ui.sortingPage import Ui_SortingPage
+from src.utils.utils import Utils
 from PyQt5.QtCore import pyqtSlot, QEventLoop, QTimer
 from PyQt5.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit
 from os import remove, mkdir, path, getenv
@@ -11,16 +12,20 @@ from glob import glob
 
 class SortingPage(QMainWindow):
     """Sorting Page"""
-    def __init__(self, stacked_widget):
+    def __init__(self, stacked_widget, gen_update_timer):
         super().__init__()
         load_dotenv('.env')
         RAW_FOLDER_PATH = getenv("RAW_FOLDER_PATH")
         JPEG_FOLDER_PATH = getenv("JPEG_FOLDER_PATH")
-        
+        self.utils = Utils()
+
         self.ui = Ui_SortingPage()
         self.ui.setupUi(self)
         self.ui.accueilBtn.clicked.connect(lambda: stacked_widget.setCurrentIndex(0))
-        
+        #Timer Initialization
+        self.gen_update_timer = gen_update_timer
+        self.gen_update_timer.timeout.connect(lambda: self.update_accueilBtn())
+
         self.ui.modeCheckBox.setChecked(False)
         self.ui.dateEdit.setVisible(False)
         self.ui.nPicLine.setVisible(False)
@@ -46,8 +51,16 @@ class SortingPage(QMainWindow):
         self.ui.statelabel.setVisible(is_checked)
         self.ui.progressBar.setVisible(is_checked)
         
-
-        # self.adjustSize()            
+    def update_accueilBtn(self):
+        '''Update the text of the accueilBtn depending if a storage device is connected'''
+        storage_state, active_storage_path = self.utils.check_storage()
+        print('[SORTING PAGE] STORAGE CHECKED')
+        if storage_state:
+            self.ui.accueilBtn.setText("Accueil 💾")
+            self.ui.accueilBtn.setToolTip(f"{active_storage_path[0]}")
+        else:
+            self.ui.accueilBtn.setText("Accueil ❌")
+            self.ui.accueilBtn.setToolTip("Aucun dispositif connecté")
 
     # def separation(self) :
     #     self.ui.statelabel.setText("séparation en cours ...")

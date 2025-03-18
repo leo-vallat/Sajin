@@ -129,7 +129,7 @@ QPushButton{
              </font>
             </property>
             <property name="text">
-             <string>  Accueil</string>
+             <string>  Accueil ❌</string>
             </property>
             <property name="iconSize">
              <size>
@@ -338,7 +338,7 @@ QPushButton{
                    </font>
                   </property>
                   <property name="text">
-                   <string>X</string>
+                   <string>--</string>
                   </property>
                  </widget>
                 </item>
@@ -395,7 +395,7 @@ QPushButton{
                    </font>
                   </property>
                   <property name="text">
-                   <string>Y</string>
+                   <string>--</string>
                   </property>
                  </widget>
                 </item>
@@ -452,7 +452,7 @@ QPushButton{
                    </font>
                   </property>
                   <property name="text">
-                   <string>Z</string>
+                   <string>--</string>
                   </property>
                  </widget>
                 </item>

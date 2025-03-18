@@ -341,7 +341,7 @@ class Ui_SortingPage(object):
     def retranslateUi(self, SortingPage):
         _translate = QtCore.QCoreApplication.translate
         SortingPage.setWindowTitle(_translate("SortingPage", "MainWindow"))
-        self.accueilBtn.setText(_translate("SortingPage", "Accueil"))
+        self.accueilBtn.setText(_translate("SortingPage", "Accueil ❌"))
         self.triBtn.setText(_translate("SortingPage", "  Tri"))
         self.renommageBtn.setText(_translate("SortingPage", "Renommage    "))
         self.sauvegardeBtn.setText(_translate("SortingPage", "Sauvegarde"))

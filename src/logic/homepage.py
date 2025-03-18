@@ -2,55 +2,81 @@ import json
 import os
 import sys
 from src.ui.homepage import Ui_Homepage
-from PyQt5.QtCore import Qt
+from src.utils.utils import Utils
+from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QLabel, QToolBar, QAction
 
 class HomePage(QMainWindow):
     """Page d'accueil"""
-    def __init__(self, stacked_widget):
+    def __init__(self, stacked_widget, gen_update_timer):
         super().__init__()
+        self.utils = Utils()
+        #UI Initialization
         self.ui = Ui_Homepage()
         self.ui.setupUi(self)
         self.ui.triBtn.clicked.connect(lambda: stacked_widget.setCurrentIndex(1))
+        #Timer Initialization
+        self.gen_update_timer = gen_update_timer
+        self.gen_update_timer.timeout.connect(lambda: self.update_ui())
+        #Storage Value Initialization
+        # storage_data = self.get_storage_data()
+        # self.ui.card1InfoLabel.setText(storage_data[0])
+        # self.ui.card2InfoLabel.setText(storage_data[1])
+        # self.ui.card3InfoLabel.setText(storage_data[2])
+        print("homepage initialized")
+
+    def update_ui(self):
+        ''' Update every ui element at the timer timeout '''
+        self.update_accueilBtn()
+        self.update_storage_data()
+
+    def update_accueilBtn(self):
+        '''Update the text of the accueilBtn depending if a storage device is connected'''
+        storage_state, active_storage_path = self.utils.check_storage()
+        print('[HOMEPAGE] STORAGE CHECKED')
+        if storage_state:
+            self.ui.accueilBtn.setText("  Accueil 💾")
+            self.ui.accueilBtn.setToolTip(f"{active_storage_path[0]}")
+        else:
+            self.ui.accueilBtn.setText("  Accueil ❌")
+            self.ui.accueilBtn.setToolTip("Aucun dispositif connecté")
+    
+    def update_storage_data(self):
+        ''' Update the values of card(1,2,3)InfoLabel '''
         storage_data = self.get_storage_data()
+        
         self.ui.card1InfoLabel.setText(storage_data[0])
         self.ui.card2InfoLabel.setText(storage_data[1])
         self.ui.card3InfoLabel.setText(storage_data[2])
 
-        print("homepage initialized")
-    
-    def reset_ui(self):
-        '''Set text Edit to updated storage values'''
-        storage_data = self.get_storage_data()
-        self.ui.card1InfoLabel.setText(storage_data[0])
-        self.ui.card2InfoLabel.setText(storage_data[1])
-        self.ui.card3InfoLabel.setText(storage_data[2])     
-
     def get_storage_data(self):
-        '''Get the number of photos stored at camera_storage paths'''
+        '''
+        Get the number of photos stored at camera_storage paths
+        
+        !!! Working for Sony environnement only !!!
+        '''
         nPic = 0
         nRAW = 0
         nJPEG = 0
-
-        with open('data/camera_storage.json', 'r') as f:
-            camera_storage = json.load(f)
         
-        active_storage_path = [path for path in camera_storage['external_storage'] if os.path.exists(path)]
+        active_storage_path = self.utils.check_storage()
 
-        # Working for Sony environment
-        for path in active_storage_path:
-            DCIM_path = os.path.join(path, 'DCIM')
-            pic_folder = [d for d in os.listdir(DCIM_path) if os.path.isdir(os.path.join(DCIM_path, d))]
-            for folder in pic_folder:
-                folder_path = os.path.join(DCIM_path, folder)
-                for file in os.listdir(folder_path):
-                    if file.endswith(('.ARW', '.NEF', '.CR3')):
-                        nRAW += 1
-                        nPic += 1
-                    elif file.endswith(('.jpg', '.JPG')):
-                        nJPEG += 1
-                        nPic += 1
-        return [str(nPic), str(nRAW), str(nJPEG)]
+        if active_storage_path[0]:
+            for path in active_storage_path[1]:
+                DCIM_path = os.path.join(path, 'DCIM')
+                pic_folder = [d for d in os.listdir(DCIM_path) if os.path.isdir(os.path.join(DCIM_path, d))]
+                for folder in pic_folder:
+                    folder_path = os.path.join(DCIM_path, folder)
+                    for file in os.listdir(folder_path):
+                        if file.endswith(('.ARW', '.NEF', '.CR3')):
+                            nRAW += 1
+                            nPic += 1
+                        elif file.endswith(('.jpg', '.JPG')):
+                            nJPEG += 1
+                            nPic += 1
+            return [str(nPic), str(nRAW), str(nJPEG)]
+        else:
+            return ['--','--','--']
 
 '''
 class FenetrePrincipale(QMainWindow):
