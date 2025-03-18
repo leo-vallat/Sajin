@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>723</width>
-    <height>495</height>
+    <height>543</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -40,6 +40,14 @@ QPushButton{
 }
 #reglagesBtn, #renommageBtn, #sauvegardeBtn, #triBtn{
 	color: #ffffff;
+}
+#statusHLine{
+	background-color: #ffffff;
+	max-height: 1px;
+}
+#SDstatusLabel, #SSDstatusLabel{
+	color: #ffffff;
+	font-weight: bold;
 }
 #bodyWidget{
 	background-color: #e5e5e5;
@@ -76,12 +84,12 @@ QPushButton{
       <property name="styleSheet">
        <string notr="true"/>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <layout class="QVBoxLayout" name="verticalLayout_5">
        <property name="leftMargin">
-        <number>10</number>
+        <number>0</number>
        </property>
        <property name="topMargin">
-        <number>18</number>
+        <number>0</number>
        </property>
        <property name="rightMargin">
         <number>0</number>
@@ -89,7 +97,7 @@ QPushButton{
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item alignment="Qt::AlignTop">
+       <item>
         <widget class="QFrame" name="menuFrame">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -108,10 +116,10 @@ QPushButton{
            <number>-1</number>
           </property>
           <property name="leftMargin">
-           <number>0</number>
+           <number>10</number>
           </property>
           <property name="topMargin">
-           <number>0</number>
+           <number>18</number>
           </property>
           <property name="rightMargin">
            <number>0</number>
@@ -129,7 +137,7 @@ QPushButton{
              </font>
             </property>
             <property name="text">
-             <string>  Accueil ❌</string>
+             <string>  Accueil</string>
             </property>
             <property name="iconSize">
              <size>
@@ -184,7 +192,7 @@ QPushButton{
           <item>
            <widget class="QPushButton" name="reglagesBtn">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -199,6 +207,81 @@ QPushButton{
             <property name="text">
              <string>Réglages</string>
             </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="frame">
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_6">
+             <item>
+              <spacer name="verticalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>198</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="Line" name="statusHLine">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>13</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                 <underline>false</underline>
+                </font>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Plain</enum>
+               </property>
+               <property name="lineWidth">
+                <number>1</number>
+               </property>
+               <property name="midLineWidth">
+                <number>0</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="SDstatusLabel">
+               <property name="text">
+                <string>💾 : ❌</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="SSDstatusLabel">
+               <property name="text">
+                <string>🗡️ : ❌</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>

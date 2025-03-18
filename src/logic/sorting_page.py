@@ -69,9 +69,6 @@ class SortingPage(QMainWindow):
         is_checked = state==2
         self.ui.dateEdit.setVisible(is_checked)
         self.ui.nPicLine.setVisible(is_checked)
-
-        self.ui.stateLabel.setVisible(is_checked)
-        self.ui.progressBar.setVisible(is_checked)
         
     def separation(self):
         if self.storage_state:

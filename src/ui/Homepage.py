@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Homepage(object):
     def setupUi(self, Homepage):
         Homepage.setObjectName("Homepage")
-        Homepage.resize(723, 495)
+        Homepage.resize(723, 543)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -41,6 +41,14 @@ class Ui_Homepage(object):
 "#reglagesBtn, #renommageBtn, #sauvegardeBtn, #triBtn{\n"
 "    color: #ffffff;\n"
 "}\n"
+"#statusHLine{\n"
+"    background-color: #ffffff;\n"
+"    max-height: 1px;\n"
+"}\n"
+"#SDstatusLabel, #SSDstatusLabel{\n"
+"    color: #ffffff;\n"
+"    font-weight: bold;\n"
+"}\n"
 "#bodyWidget{\n"
 "    background-color: #e5e5e5;\n"
 "}\n"
@@ -61,9 +69,9 @@ class Ui_Homepage(object):
         self.sidebarWidget.setSizePolicy(sizePolicy)
         self.sidebarWidget.setStyleSheet("")
         self.sidebarWidget.setObjectName("sidebarWidget")
-        self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.sidebarWidget)
-        self.horizontalLayout_4.setContentsMargins(10, 18, 0, 0)
-        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.sidebarWidget)
+        self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_5.setObjectName("verticalLayout_5")
         self.menuFrame = QtWidgets.QFrame(self.sidebarWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -74,7 +82,7 @@ class Ui_Homepage(object):
         self.menuFrame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.menuFrame.setObjectName("menuFrame")
         self.verticalLayout_11 = QtWidgets.QVBoxLayout(self.menuFrame)
-        self.verticalLayout_11.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_11.setContentsMargins(10, 18, 0, 0)
         self.verticalLayout_11.setObjectName("verticalLayout_11")
         self.accueilBtn = QtWidgets.QPushButton(self.menuFrame)
         font = QtGui.QFont()
@@ -110,7 +118,7 @@ class Ui_Homepage(object):
         self.sauvegardeBtn.setObjectName("sauvegardeBtn")
         self.verticalLayout_11.addWidget(self.sauvegardeBtn)
         self.reglagesBtn = QtWidgets.QPushButton(self.menuFrame)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.reglagesBtn.sizePolicy().hasHeightForWidth())
@@ -122,7 +130,42 @@ class Ui_Homepage(object):
         self.reglagesBtn.setFont(font)
         self.reglagesBtn.setObjectName("reglagesBtn")
         self.verticalLayout_11.addWidget(self.reglagesBtn)
-        self.horizontalLayout_4.addWidget(self.menuFrame, 0, QtCore.Qt.AlignTop)
+        self.frame = QtWidgets.QFrame(self.menuFrame)
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setObjectName("frame")
+        self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.frame)
+        self.verticalLayout_6.setObjectName("verticalLayout_6")
+        spacerItem = QtWidgets.QSpacerItem(20, 198, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_6.addItem(spacerItem)
+        self.statusHLine = QtWidgets.QFrame(self.frame)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.statusHLine.sizePolicy().hasHeightForWidth())
+        self.statusHLine.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setPointSize(13)
+        font.setBold(False)
+        font.setUnderline(False)
+        font.setWeight(50)
+        self.statusHLine.setFont(font)
+        self.statusHLine.setFrameShadow(QtWidgets.QFrame.Plain)
+        self.statusHLine.setLineWidth(1)
+        self.statusHLine.setMidLineWidth(0)
+        self.statusHLine.setFrameShape(QtWidgets.QFrame.HLine)
+        self.statusHLine.setObjectName("statusHLine")
+        self.verticalLayout_6.addWidget(self.statusHLine)
+        self.SDstatusLabel = QtWidgets.QLabel(self.frame)
+        self.SDstatusLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.SDstatusLabel.setObjectName("SDstatusLabel")
+        self.verticalLayout_6.addWidget(self.SDstatusLabel)
+        self.SSDstatusLabel = QtWidgets.QLabel(self.frame)
+        self.SSDstatusLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.SSDstatusLabel.setObjectName("SSDstatusLabel")
+        self.verticalLayout_6.addWidget(self.SSDstatusLabel)
+        self.verticalLayout_11.addWidget(self.frame)
+        self.verticalLayout_5.addWidget(self.menuFrame)
         self.horizontalLayout.addWidget(self.sidebarWidget)
         self.bodyWidget = QtWidgets.QWidget(self.centralWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
@@ -262,8 +305,8 @@ class Ui_Homepage(object):
         self.verticalLayout_4.addWidget(self.card3Label, 0, QtCore.Qt.AlignTop)
         self.horizontalLayout_7.addWidget(self.card3)
         self.verticalLayout.addWidget(self.cardsFrame, 0, QtCore.Qt.AlignHCenter)
-        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout.addItem(spacerItem)
+        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout.addItem(spacerItem1)
         self.horizontalLayout.addWidget(self.bodyWidget)
         Homepage.setCentralWidget(self.centralWidget)
 
@@ -273,11 +316,13 @@ class Ui_Homepage(object):
     def retranslateUi(self, Homepage):
         _translate = QtCore.QCoreApplication.translate
         Homepage.setWindowTitle(_translate("Homepage", "MainWindow"))
-        self.accueilBtn.setText(_translate("Homepage", "  Accueil ❌"))
+        self.accueilBtn.setText(_translate("Homepage", "  Accueil"))
         self.triBtn.setText(_translate("Homepage", "Tri"))
         self.renommageBtn.setText(_translate("Homepage", "Renommage    "))
         self.sauvegardeBtn.setText(_translate("Homepage", "Sauvegarde"))
         self.reglagesBtn.setText(_translate("Homepage", "Réglages"))
+        self.SDstatusLabel.setText(_translate("Homepage", "💾 : ❌"))
+        self.SSDstatusLabel.setText(_translate("Homepage", "🗡️ : ❌"))
         self.headerLabel.setText(_translate("Homepage", "Sajin"))
         self.card1InfoLabel.setText(_translate("Homepage", "--"))
         self.card1Label.setText(_translate("Homepage", "Photos à trier"))

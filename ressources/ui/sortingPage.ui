@@ -47,6 +47,14 @@ QPushButton{
 #reglagesBtn, #renommageBtn, #sauvegardeBtn, #accueilBtn{
 	color: #ffffff;
 }
+#statusHLine{
+	background-color: #ffffff;
+	max-height: 1px;
+}
+#SDstatusLabel, #SSDstatusLabel{
+	color: #ffffff;
+	font-weight: bold;
+}
 #bodyWidget{
 	background-color: #e5e5e5;
 }
@@ -103,12 +111,12 @@ QPushButton{
       <property name="styleSheet">
        <string notr="true"/>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <layout class="QVBoxLayout" name="verticalLayout_4">
        <property name="leftMargin">
-        <number>10</number>
+        <number>0</number>
        </property>
        <property name="topMargin">
-        <number>18</number>
+        <number>0</number>
        </property>
        <property name="rightMargin">
         <number>0</number>
@@ -116,7 +124,7 @@ QPushButton{
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item alignment="Qt::AlignTop">
+       <item>
         <widget class="QFrame" name="menuFrame">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -135,10 +143,10 @@ QPushButton{
            <number>-1</number>
           </property>
           <property name="leftMargin">
-           <number>0</number>
+           <number>10</number>
           </property>
           <property name="topMargin">
-           <number>0</number>
+           <number>18</number>
           </property>
           <property name="rightMargin">
            <number>0</number>
@@ -156,7 +164,7 @@ QPushButton{
              </font>
             </property>
             <property name="text">
-             <string>Accueil ❌</string>
+             <string>Accueil</string>
             </property>
             <property name="iconSize">
              <size>
@@ -225,6 +233,81 @@ QPushButton{
             </property>
             <property name="text">
              <string>Réglages</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="statusFrame">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="Line" name="statusHLine">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>13</pointsize>
+              <weight>50</weight>
+              <bold>false</bold>
+              <underline>false</underline>
+             </font>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Plain</enum>
+            </property>
+            <property name="lineWidth">
+             <number>1</number>
+            </property>
+            <property name="midLineWidth">
+             <number>0</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="SDstatusLabel">
+            <property name="text">
+             <string>💾 : ❌</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="SSDstatusLabel">
+            <property name="text">
+             <string>🗡️ : ❌</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -419,13 +502,13 @@ QPushButton{
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_12">
           <property name="leftMargin">
-           <number>0</number>
+           <number>30</number>
           </property>
           <property name="topMargin">
            <number>20</number>
           </property>
           <property name="rightMargin">
-           <number>0</number>
+           <number>30</number>
           </property>
           <property name="bottomMargin">
            <number>0</number>
@@ -496,7 +579,7 @@ QPushButton{
                  <number>0</number>
                 </property>
                 <property name="rightMargin">
-                 <number>300</number>
+                 <number>133</number>
                 </property>
                 <property name="bottomMargin">
                  <number>12</number>

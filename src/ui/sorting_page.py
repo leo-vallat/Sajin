@@ -42,6 +42,14 @@ class Ui_SortingPage(object):
 "#reglagesBtn, #renommageBtn, #sauvegardeBtn, #accueilBtn{\n"
 "    color: #ffffff;\n"
 "}\n"
+"#statusHLine{\n"
+"    background-color: #ffffff;\n"
+"    max-height: 1px;\n"
+"}\n"
+"#SDstatusLabel, #SSDstatusLabel{\n"
+"    color: #ffffff;\n"
+"    font-weight: bold;\n"
+"}\n"
 "#bodyWidget{\n"
 "    background-color: #e5e5e5;\n"
 "}\n"
@@ -83,9 +91,9 @@ class Ui_SortingPage(object):
         self.sidebarWidget.setSizePolicy(sizePolicy)
         self.sidebarWidget.setStyleSheet("")
         self.sidebarWidget.setObjectName("sidebarWidget")
-        self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.sidebarWidget)
-        self.horizontalLayout_4.setContentsMargins(10, 18, 0, 0)
-        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.sidebarWidget)
+        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_4.setObjectName("verticalLayout_4")
         self.menuFrame = QtWidgets.QFrame(self.sidebarWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -96,7 +104,7 @@ class Ui_SortingPage(object):
         self.menuFrame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.menuFrame.setObjectName("menuFrame")
         self.verticalLayout_11 = QtWidgets.QVBoxLayout(self.menuFrame)
-        self.verticalLayout_11.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_11.setContentsMargins(10, 18, 0, 0)
         self.verticalLayout_11.setObjectName("verticalLayout_11")
         self.accueilBtn = QtWidgets.QPushButton(self.menuFrame)
         font = QtGui.QFont()
@@ -144,7 +152,42 @@ class Ui_SortingPage(object):
         self.reglagesBtn.setFont(font)
         self.reglagesBtn.setObjectName("reglagesBtn")
         self.verticalLayout_11.addWidget(self.reglagesBtn)
-        self.horizontalLayout_4.addWidget(self.menuFrame, 0, QtCore.Qt.AlignTop)
+        self.verticalLayout_4.addWidget(self.menuFrame)
+        self.statusFrame = QtWidgets.QFrame(self.sidebarWidget)
+        self.statusFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.statusFrame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.statusFrame.setObjectName("statusFrame")
+        self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.statusFrame)
+        self.verticalLayout_6.setObjectName("verticalLayout_6")
+        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_6.addItem(spacerItem)
+        self.statusHLine = QtWidgets.QFrame(self.statusFrame)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.statusHLine.sizePolicy().hasHeightForWidth())
+        self.statusHLine.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setPointSize(13)
+        font.setBold(False)
+        font.setUnderline(False)
+        font.setWeight(50)
+        self.statusHLine.setFont(font)
+        self.statusHLine.setFrameShadow(QtWidgets.QFrame.Plain)
+        self.statusHLine.setLineWidth(1)
+        self.statusHLine.setMidLineWidth(0)
+        self.statusHLine.setFrameShape(QtWidgets.QFrame.HLine)
+        self.statusHLine.setObjectName("statusHLine")
+        self.verticalLayout_6.addWidget(self.statusHLine)
+        self.SDstatusLabel = QtWidgets.QLabel(self.statusFrame)
+        self.SDstatusLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.SDstatusLabel.setObjectName("SDstatusLabel")
+        self.verticalLayout_6.addWidget(self.SDstatusLabel)
+        self.SSDstatusLabel = QtWidgets.QLabel(self.statusFrame)
+        self.SSDstatusLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.SSDstatusLabel.setObjectName("SSDstatusLabel")
+        self.verticalLayout_6.addWidget(self.SSDstatusLabel)
+        self.verticalLayout_4.addWidget(self.statusFrame)
         self.horizontalLayout.addWidget(self.sidebarWidget)
         self.bodyWidget = QtWidgets.QWidget(self.centralWidget)
         self.bodyWidget.setObjectName("bodyWidget")
@@ -238,7 +281,7 @@ class Ui_SortingPage(object):
         self.tidyingWidget.setSizePolicy(sizePolicy)
         self.tidyingWidget.setObjectName("tidyingWidget")
         self.horizontalLayout_12 = QtWidgets.QHBoxLayout(self.tidyingWidget)
-        self.horizontalLayout_12.setContentsMargins(0, 20, 0, 0)
+        self.horizontalLayout_12.setContentsMargins(30, 20, 30, 0)
         self.horizontalLayout_12.setObjectName("horizontalLayout_12")
         self.settingsWidget = QtWidgets.QWidget(self.tidyingWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
@@ -273,7 +316,7 @@ class Ui_SortingPage(object):
         self.settingsFrame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.settingsFrame.setObjectName("settingsFrame")
         self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.settingsFrame)
-        self.verticalLayout_5.setContentsMargins(0, 0, 300, 12)
+        self.verticalLayout_5.setContentsMargins(0, 0, 133, 12)
         self.verticalLayout_5.setSpacing(13)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
         self.eventNameLine = QtWidgets.QLineEdit(self.settingsFrame)
@@ -332,11 +375,13 @@ class Ui_SortingPage(object):
     def retranslateUi(self, SortingPage):
         _translate = QtCore.QCoreApplication.translate
         SortingPage.setWindowTitle(_translate("SortingPage", "MainWindow"))
-        self.accueilBtn.setText(_translate("SortingPage", "Accueil ❌"))
+        self.accueilBtn.setText(_translate("SortingPage", "Accueil"))
         self.triBtn.setText(_translate("SortingPage", "  Tri"))
         self.renommageBtn.setText(_translate("SortingPage", "Renommage    "))
         self.sauvegardeBtn.setText(_translate("SortingPage", "Sauvegarde"))
         self.reglagesBtn.setText(_translate("SortingPage", "Réglages"))
+        self.SDstatusLabel.setText(_translate("SortingPage", "💾 : ❌"))
+        self.SSDstatusLabel.setText(_translate("SortingPage", "🗡️ : ❌"))
         self.headerLabel.setText(_translate("SortingPage", "Sajin"))
         self.separationBtn.setText(_translate("SortingPage", "Séparation"))
         self.rangementBtn.setText(_translate("SortingPage", "Rangement"))
