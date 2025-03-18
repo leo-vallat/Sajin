@@ -61,6 +61,9 @@ QPushButton{
 	color: white;
 	text-align: center;
 }
+#separationBtn:disabled, #coherenceBtn:disabled, #rangementBtn:disabled, #suppressionBtn:disabled{
+	color: #e5e5e5;
+}
 #settingsWidget{
 	background-color:#ffffff;
 	border-radius:10px;
@@ -365,6 +368,9 @@ QPushButton{
           </item>
           <item row="0" column="1">
            <widget class="QPushButton" name="coherenceBtn">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -580,12 +586,17 @@ QPushButton{
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="statelabel">
+        <widget class="QLabel" name="stateLabel">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <italic>true</italic>
+          </font>
          </property>
          <property name="text">
           <string>TextLabel</string>

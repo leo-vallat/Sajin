@@ -1,45 +1,67 @@
 import datetime
+import os
 from dotenv import load_dotenv
-from src.ui.sortingPage import Ui_SortingPage
+from src.ui.sorting_page import Ui_SortingPage
 from src.utils.utils import Utils
-from PyQt5.QtCore import pyqtSlot, QEventLoop, QTimer
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QVBoxLayout, QWidget, QLabel, QLineEdit
+from src.utils.workers import SeparationWorker
+from PyQt5.QtCore import pyqtSlot, QTimer, QThreadPool
+from PyQt5.QtWidgets import QMainWindow, QApplication
 from os import remove, mkdir, path, getenv
-from shutil import copy
-from glob import glob
 # from PIL import Image, ExifTags
 
 
 class SortingPage(QMainWindow):
     """Sorting Page"""
-    def __init__(self, stacked_widget, gen_update_timer):
+    def __init__(self, stacked_widget, gen_update_tm):
         super().__init__()
         load_dotenv('.env')
-        RAW_FOLDER_PATH = getenv("RAW_FOLDER_PATH")
-        JPEG_FOLDER_PATH = getenv("JPEG_FOLDER_PATH")
+        self.RAW_FOLDER_PATH = getenv("RAW_FOLDER_PATH")
+        self.JPEG_FOLDER_PATH = getenv("JPEG_FOLDER_PATH")
+        #Objects Initialization
         self.utils = Utils()
-
         self.ui = Ui_SortingPage()
+        #UI Setup
         self.ui.setupUi(self)
-        self.ui.accueilBtn.clicked.connect(lambda: stacked_widget.setCurrentIndex(0))
-        #Timer Initialization
-        self.gen_update_timer = gen_update_timer
-        self.gen_update_timer.timeout.connect(lambda: self.update_accueilBtn())
-
+        #Widgets Value Initialization
         self.ui.modeCheckBox.setChecked(False)
+        self.ui.dateEdit.setDate(datetime.date.today())
+        self.ui.stateLabel.setText("")
+        #Widgets Visibility Initialization
         self.ui.dateEdit.setVisible(False)
         self.ui.nPicLine.setVisible(False)
-        self.ui.statelabel.setVisible(False)
         self.ui.progressBar.setVisible(False)
-
-        self.ui.modeCheckBox.stateChanged.connect(self.toggle_widgets)
-
-        self.ui.dateEdit.setDate(datetime.date.today())
-
-    #     self.ui.separationBtn.clicked.connect(lambda: self.separation)
+        #Widgets Callback Initialization
+        self.ui.accueilBtn.clicked.connect(lambda: stacked_widget.setCurrentIndex(0))
+        self.ui.separationBtn.clicked.connect(lambda: self.separation())
     #     self.ui.coherenceBtn.clicked.connect(lambda: self.coherence)
     #     self.ui.rangementBtn.clicked.connect(lambda: self.rangement)
     #     self.ui.suppressionBtn.clicked.connect(lambda: self.suppression)
+        self.ui.modeCheckBox.stateChanged.connect(self.toggle_widgets)
+        #Other attributes
+        self.storage_state, self.storage_device = self.utils.get_storage()
+        #Timers Initialization
+        self.gen_update_tm = gen_update_tm
+        self.gen_update_tm.timeout.connect(lambda: self.update_ui())
+        self.action_timer = QTimer()
+        self.action_timer.setSingleShot(True)
+        self.action_timer.timeout.connect(lambda: self.reinitialize_state_label())
+
+        print("sorting page initialized")
+
+    def update_ui(self):
+        ''' Update every ui element at the timer timeout '''
+        self.storage_state, self.storage_device = self.utils.get_storage()
+        self.update_accueilBtn()
+    
+    def update_accueilBtn(self):
+        '''Update the text of the accueilBtn depending if a storage device is connected'''
+        storage_state, active_storage_path = self.utils.get_storage()
+        if storage_state:
+            self.ui.accueilBtn.setText("Accueil 💾")
+            self.ui.accueilBtn.setToolTip(f"{active_storage_path[0]}")
+        else:
+            self.ui.accueilBtn.setText("Accueil ❌")
+            self.ui.accueilBtn.setToolTip("Aucun dispositif connecté")
 
     @pyqtSlot(int)
     def toggle_widgets(self, state):
@@ -48,33 +70,42 @@ class SortingPage(QMainWindow):
         self.ui.dateEdit.setVisible(is_checked)
         self.ui.nPicLine.setVisible(is_checked)
 
-        self.ui.statelabel.setVisible(is_checked)
+        self.ui.stateLabel.setVisible(is_checked)
         self.ui.progressBar.setVisible(is_checked)
         
-    def update_accueilBtn(self):
-        '''Update the text of the accueilBtn depending if a storage device is connected'''
-        storage_state, active_storage_path = self.utils.check_storage()
-        print('[SORTING PAGE] STORAGE CHECKED')
-        if storage_state:
-            self.ui.accueilBtn.setText("Accueil 💾")
-            self.ui.accueilBtn.setToolTip(f"{active_storage_path[0]}")
+    def separation(self):
+        if self.storage_state:
+            self.ui.stateLabel.setText("Séparation en cours ...")
+            # Disable other action buttons
+            self.ui.coherenceBtn.setDisabled(True)
+            self.ui.rangementBtn.setDisabled(True)
+            self.ui.suppressionBtn.setDisabled(True)
+            # Transfer photos
+            pic_folders_path = self.get_pic_folders_path()  
+            worker = SeparationWorker(pic_folders_path,self.JPEG_FOLDER_PATH)
+            worker.signal.finished.connect(self.on_separation_finished)
+            QThreadPool.globalInstance().start(worker)
         else:
-            self.ui.accueilBtn.setText("Accueil ❌")
-            self.ui.accueilBtn.setToolTip("Aucun dispositif connecté")
+            self.on_separation_fail()
 
-    # def separation(self) :
-    #     self.ui.statelabel.setText("séparation en cours ...")
+    def get_pic_folders_path(self):
+        '''Return the list of paths to folders containing the photos'''
+        DCIM_path = os.path.join(self.storage_device[0], 'DCIM')
+        return [os.path.join(DCIM_path, folder) for folder in os.listdir(DCIM_path) if os.path.isdir(os.path.join(DCIM_path, folder))]
 
-    #     for pathPhoto in fPathSD:  #Itérations sur tous les chemins
-            
-    #         if pathPhoto[-1] == 'G':  #Condition de tri d'un JPEG
-    #             copy(pathPhoto, '/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Jpeg/' + pathPhoto[-12:])  #Enregistrement dans le bon dossier
-            
-    #         else : 
-    #             copy(pathPhoto, '/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Raw/' + pathPhoto[-12:])
-    #     self.labelEtat.setText("séparation ok")
-    #     self.timer.start(3000)
+    def on_separation_finished(self):
+        '''Set value of stateLabel to 'Séparation terminée' for 3 seconds'''
+        self.ui.stateLabel.setText("Séparation terminée")
+        self.action_timer.start(3000)
+        self.ui.coherenceBtn.setDisabled(False)
+        self.ui.rangementBtn.setDisabled(False)
+        self.ui.suppressionBtn.setDisabled(False)
 
+    def on_separation_fail(self):
+        '''Set value to stateLabel in according to the failling situation'''
+        self.ui.stateLabel.setText(
+            '''<span style="color:red">Aucun dispositif de stockage n'est connecté</span>''')
+        self.action_timer.start(5000)
 
     # def coherence(self) :
     #     self.labelEtat.setText("mise en cohérence en cours ...")
@@ -82,15 +113,15 @@ class SortingPage(QMainWindow):
     #     fPathJ = list(glob('/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Jpeg/*'))
     #     fPathR = list(glob('/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Raw/*'))
 
-    #     for pathPhotoR in fPathR :															#Itération sur chaque éléments des deux listes (correspondant à chaque photo)
+    #     for pic_pathR in fPathR :															#Itération sur chaque éléments des deux listes (correspondant à chaque photo)
     #         garder = False 																	#Condition de garder une photo
 
-    #         for pathPhotoJ in fPathJ :
-    #             if pathPhotoJ[-8:-4] == pathPhotoR[-8:-4] : 								#Condition pour le tri de la photo avec les 2 numéros des photos  
+    #         for pic_pathJ in fPathJ :
+    #             if pic_pathJ[-8:-4] == pic_pathR[-8:-4] : 								#Condition pour le tri de la photo avec les 2 numéros des photos  
     #                 garder = True 															#La condition passe à true si les numéros de photos correspondent
 
     #         if garder == False :
-    #             remove(pathPhotoR) 															#Efface la photo si condition est fausse
+    #             remove(pic_pathR) 															#Efface la photo si condition est fausse
 
     #     self.labelEtat.setText("mise en cohérence ok")
     #     self.timer.start(3000)
@@ -130,11 +161,11 @@ class SortingPage(QMainWindow):
     #         monthLetter = month + ' ' + lMonth[int(month)-1]
 
 
-    #     if not path.exists(self.getPathPhoto(year)) : 														#Création des dossiers année, mois si nécessaire
-    #         mkdir(self.getPathPhoto(year))
+    #     if not path.exists(self.getpic_path(year)) : 														#Création des dossiers année, mois si nécessaire
+    #         mkdir(self.getpic_path(year))
 
-    #     if not path.exists(self.getPathPhoto(year + '/' + monthLetter)) :
-    #         mkdir(self.getPathPhoto(year + '/' + monthLetter))	
+    #     if not path.exists(self.getpic_path(year + '/' + monthLetter)) :
+    #         mkdir(self.getpic_path(year + '/' + monthLetter))	
 
     #     mkdir(self.getPathEvnmt(year, monthLetter, month, day, evnmt))										#Création du dossier de l'évènement
 
@@ -142,11 +173,11 @@ class SortingPage(QMainWindow):
     #         mkdir(self.getPathDirPhoto(year, monthLetter, month, day, evnmt, lDir[i]))
 
 
-    #     for pathPhoto in fPathJ :																		#Copie des photos dans le DDE
-    #         copy(pathPhoto, self.getPathDirPhoto(year, monthLetter, month, day, evnmt, '/OG/JPEG'))
+    #     for pic_path in fPathJ :																		#Copie des photos dans le DDE
+    #         copy(pic_path, self.getPathDirPhoto(year, monthLetter, month, day, evnmt, '/OG/JPEG'))
 
-    #     for pathPhoto in fPathR :
-    #         copy(pathPhoto, self.getPathDirPhoto(year, monthLetter, month, day, evnmt, '/OG/RAW'))
+    #     for pic_path in fPathR :
+    #         copy(pic_path, self.getPathDirPhoto(year, monthLetter, month, day, evnmt, '/OG/RAW'))
 
     #     self.labelEtat.setText("rangement ok")
     #     self.timer.start(3000)
@@ -171,28 +202,29 @@ class SortingPage(QMainWindow):
     #     ls = ['SD', 'jpeg', 'raw']
         
     #     for path, directory in zip(lPath, ls) :
-    #             for pathPhoto in path :
-    #                 remove(pathPhoto)
+    #             for pic_path in path :
+    #                 remove(pic_path)
     #             self.labelEtat.setText('Suppression ' + directory + ' ok')
     #             self.timer.start(1000)
     #     self.labelEtat.setText("Suppression ok\nArvi Pa SIUUUUUUU")
     #     self.timer.start(3000)
 
 
-    # def getPathPhoto(self,path) :     
+    # def getpic_path(self,path) :     
     #     return '/Volumes/Andúril/Prod/Photo/' + path 
 
 
     # def getPathEvnmt(self, year, monthLetter, month, day, evnmt) :     
-    #     return self.getPathPhoto(year + '/' + monthLetter + '/' + day + ':' + month + ' ' + evnmt)
+    #     return self.getpic_path(year + '/' + monthLetter + '/' + day + ':' + month + ' ' + evnmt)
 
 
     # def getPathDirPhoto(self, year, monthLetter, month, day, evnmt, path) :   
     #     return self.getPathEvnmt(year, monthLetter, month, day, evnmt) + path
     
 
-    # def finTimer(self):
-    #     self.labelEtat.setText("")
+    def reinitialize_state_label(self):
+        '''Reinitialize the state label to "".'''
+        self.ui.stateLabel.setText("")
 
 '''
 class Tri(FenetrePrincipale):
@@ -252,13 +284,13 @@ class Tri(FenetrePrincipale):
     def separation(self, fPathSD) :
         self.labelEtat.setText("séparation en cours ...")
 
-        for pathPhoto in fPathSD :															#Itérations sur tous les chemins
+        for pic_path in fPathSD :															#Itérations sur tous les chemins
             
-            if pathPhoto[-1] == 'G' : 														#Condition de tri d'un JPEG
-                copy(pathPhoto, '/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Jpeg/' + pathPhoto[-12:]) 	#Enregistrement dans le bon dossier
+            if pic_path[-1] == 'G' : 														#Condition de tri d'un JPEG
+                copy(pic_path, '/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Jpeg/' + pic_path[-12:]) 	#Enregistrement dans le bon dossier
             
             else : 
-                copy(pathPhoto, '/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Raw/' + pathPhoto[-12:])
+                copy(pic_path, '/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Raw/' + pic_path[-12:])
         self.labelEtat.setText("séparation ok")
         self.timer.start(3000)
 
@@ -269,15 +301,15 @@ class Tri(FenetrePrincipale):
         fPathJ = list(glob('/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Jpeg/*'))
         fPathR = list(glob('/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Raw/*'))
 
-        for pathPhotoR in fPathR :															#Itération sur chaque éléments des deux listes (correspondant à chaque photo)
+        for pic_pathR in fPathR :															#Itération sur chaque éléments des deux listes (correspondant à chaque photo)
             garder = False 																	#Condition de garder une photo
 
-            for pathPhotoJ in fPathJ :
-                if pathPhotoJ[-8:-4] == pathPhotoR[-8:-4] : 								#Condition pour le tri de la photo avec les 2 numéros des photos  
+            for pic_pathJ in fPathJ :
+                if pic_pathJ[-8:-4] == pic_pathR[-8:-4] : 								#Condition pour le tri de la photo avec les 2 numéros des photos  
                     garder = True 															#La condition passe à true si les numéros de photos correspondent
 
             if garder == False :
-                remove(pathPhotoR) 															#Efface la photo si condition est fausse
+                remove(pic_pathR) 															#Efface la photo si condition est fausse
 
         self.labelEtat.setText("mise en cohérence ok")
         self.timer.start(3000)
@@ -317,11 +349,11 @@ class Tri(FenetrePrincipale):
             monthLetter = month + ' ' + lMonth[int(month)-1]
 
 
-        if not path.exists(self.getPathPhoto(year)) : 														#Création des dossiers année, mois si nécessaire
-            mkdir(self.getPathPhoto(year))
+        if not path.exists(self.getpic_path(year)) : 														#Création des dossiers année, mois si nécessaire
+            mkdir(self.getpic_path(year))
 
-        if not path.exists(self.getPathPhoto(year + '/' + monthLetter)) :
-            mkdir(self.getPathPhoto(year + '/' + monthLetter))	
+        if not path.exists(self.getpic_path(year + '/' + monthLetter)) :
+            mkdir(self.getpic_path(year + '/' + monthLetter))	
 
         mkdir(self.getPathEvnmt(year, monthLetter, month, day, evnmt))										#Création du dossier de l'évènement
 
@@ -329,11 +361,11 @@ class Tri(FenetrePrincipale):
             mkdir(self.getPathDirPhoto(year, monthLetter, month, day, evnmt, lDir[i]))
 
 
-        for pathPhoto in fPathJ :																		#Copie des photos dans le DDE
-            copy(pathPhoto, self.getPathDirPhoto(year, monthLetter, month, day, evnmt, '/OG/JPEG'))
+        for pic_path in fPathJ :																		#Copie des photos dans le DDE
+            copy(pic_path, self.getPathDirPhoto(year, monthLetter, month, day, evnmt, '/OG/JPEG'))
 
-        for pathPhoto in fPathR :
-            copy(pathPhoto, self.getPathDirPhoto(year, monthLetter, month, day, evnmt, '/OG/RAW'))
+        for pic_path in fPathR :
+            copy(pic_path, self.getPathDirPhoto(year, monthLetter, month, day, evnmt, '/OG/RAW'))
 
         self.labelEtat.setText("rangement ok")
         self.timer.start(3000)
@@ -358,20 +390,20 @@ class Tri(FenetrePrincipale):
         ls = ['SD', 'jpeg', 'raw']
         
         for path, directory in zip(lPath, ls) :
-                for pathPhoto in path :
-                    remove(pathPhoto)
+                for pic_path in path :
+                    remove(pic_path)
                 self.labelEtat.setText('Suppression ' + directory + ' ok')
                 self.timer.start(1000)
         self.labelEtat.setText("Suppression ok\nArvi Pa SIUUUUUUU")
         self.timer.start(3000)
 
 
-    def getPathPhoto(self,path) :     
+    def getpic_path(self,path) :     
         return '/Volumes/Andúril/Prod/Photo/' + path 
 
 
     def getPathEvnmt(self, year, monthLetter, month, day, evnmt) :     
-        return self.getPathPhoto(year + '/' + monthLetter + '/' + day + ':' + month + ' ' + evnmt)
+        return self.getpic_path(year + '/' + monthLetter + '/' + day + ':' + month + ' ' + evnmt)
 
 
     def getPathDirPhoto(self, year, monthLetter, month, day, evnmt, path) :   

@@ -2,7 +2,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import QTimer
 import sys
 from src.logic.homepage import HomePage  
-from src.logic.sortingPage import SortingPage
+from src.logic.sorting_page import SortingPage
 
 class MainApp(QtWidgets.QMainWindow):
     def __init__(self):
@@ -19,15 +19,6 @@ class MainApp(QtWidgets.QMainWindow):
         self.stacked_widget.addWidget(self.sorting_page)  
         
         self.stacked_widget.setCurrentIndex(0)  # Affiche la page d'accueil par défaut
-
-    def go_to_homePage(self):
-        '''Natigate to homePage'''
-        self.homepage.reset_ui()
-        self.stacked_widget.setCurrentIndex(0)
-
-    def go_to_sortingPage(self):
-        '''Navigate to sortingPage'''
-        self.stacked_widget.setCurrentIndex(1)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

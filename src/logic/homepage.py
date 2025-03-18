@@ -32,8 +32,7 @@ class HomePage(QMainWindow):
 
     def update_accueilBtn(self):
         '''Update the text of the accueilBtn depending if a storage device is connected'''
-        storage_state, active_storage_path = self.utils.check_storage()
-        print('[HOMEPAGE] STORAGE CHECKED')
+        storage_state, active_storage_path = self.utils.get_storage()
         if storage_state:
             self.ui.accueilBtn.setText("  Accueil 💾")
             self.ui.accueilBtn.setToolTip(f"{active_storage_path[0]}")
@@ -59,10 +58,10 @@ class HomePage(QMainWindow):
         nRAW = 0
         nJPEG = 0
         
-        active_storage_path = self.utils.check_storage()
+        storage_state, active_storage_path = self.utils.get_storage()
 
-        if active_storage_path[0]:
-            for path in active_storage_path[1]:
+        if storage_state:
+            for path in active_storage_path:
                 DCIM_path = os.path.join(path, 'DCIM')
                 pic_folder = [d for d in os.listdir(DCIM_path) if os.path.isdir(os.path.join(DCIM_path, d))]
                 for folder in pic_folder:

@@ -56,6 +56,9 @@ class Ui_SortingPage(object):
 "    color: white;\n"
 "    text-align: center;\n"
 "}\n"
+"#separationBtn:disabled, #coherenceBtn:disabled, #rangementBtn:disabled, #suppressionBtn:disabled{\n"
+"    color: #e5e5e5;\n"
+"}\n"
 "#settingsWidget{\n"
 "    background-color:#ffffff;\n"
 "    border-radius:10px;\n"
@@ -202,6 +205,7 @@ class Ui_SortingPage(object):
         self.separationBtn.setObjectName("separationBtn")
         self.gridLayout.addWidget(self.separationBtn, 0, 0, 1, 1)
         self.coherenceBtn = QtWidgets.QPushButton(self.btnFrame)
+        self.coherenceBtn.setEnabled(True)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -314,14 +318,17 @@ class Ui_SortingPage(object):
         self.verticalLayout_2.addWidget(self.settingsFrame)
         self.horizontalLayout_12.addWidget(self.settingsWidget)
         self.verticalLayout.addWidget(self.tidyingWidget, 0, QtCore.Qt.AlignTop)
-        self.statelabel = QtWidgets.QLabel(self.bodyWidget)
+        self.stateLabel = QtWidgets.QLabel(self.bodyWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.statelabel.sizePolicy().hasHeightForWidth())
-        self.statelabel.setSizePolicy(sizePolicy)
-        self.statelabel.setObjectName("statelabel")
-        self.verticalLayout.addWidget(self.statelabel)
+        sizePolicy.setHeightForWidth(self.stateLabel.sizePolicy().hasHeightForWidth())
+        self.stateLabel.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setItalic(True)
+        self.stateLabel.setFont(font)
+        self.stateLabel.setObjectName("stateLabel")
+        self.verticalLayout.addWidget(self.stateLabel)
         self.progressBar = QtWidgets.QProgressBar(self.bodyWidget)
         font = QtGui.QFont()
         font.setPointSize(13)
@@ -355,7 +362,7 @@ class Ui_SortingPage(object):
         self.eventNameLine.setPlaceholderText(_translate("SortingPage", "  Nom de l\'évènement"))
         self.modeCheckBox.setText(_translate("SortingPage", "Mode Manuel"))
         self.nPicLine.setPlaceholderText(_translate("SortingPage", "  Num des photos ( - )"))
-        self.statelabel.setText(_translate("SortingPage", "TextLabel"))
+        self.stateLabel.setText(_translate("SortingPage", "TextLabel"))
 
 
 if __name__ == "__main__":
