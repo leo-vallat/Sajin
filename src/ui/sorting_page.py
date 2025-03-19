@@ -46,7 +46,7 @@ class Ui_SortingPage(object):
 "    background-color: #ffffff;\n"
 "    max-height: 1px;\n"
 "}\n"
-"#SDstatusLabel, #SSDstatusLabel{\n"
+"#camStoStatusLabel, #extStoStatusLabel{\n"
 "    color: #ffffff;\n"
 "    font-weight: bold;\n"
 "}\n"
@@ -154,6 +154,7 @@ class Ui_SortingPage(object):
         self.verticalLayout_11.addWidget(self.reglagesBtn)
         self.verticalLayout_4.addWidget(self.menuFrame)
         self.statusFrame = QtWidgets.QFrame(self.sidebarWidget)
+        self.statusFrame.setMinimumSize(QtCore.QSize(0, 108))
         self.statusFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.statusFrame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.statusFrame.setObjectName("statusFrame")
@@ -179,14 +180,16 @@ class Ui_SortingPage(object):
         self.statusHLine.setFrameShape(QtWidgets.QFrame.HLine)
         self.statusHLine.setObjectName("statusHLine")
         self.verticalLayout_6.addWidget(self.statusHLine)
-        self.SDstatusLabel = QtWidgets.QLabel(self.statusFrame)
-        self.SDstatusLabel.setAlignment(QtCore.Qt.AlignCenter)
-        self.SDstatusLabel.setObjectName("SDstatusLabel")
-        self.verticalLayout_6.addWidget(self.SDstatusLabel)
-        self.SSDstatusLabel = QtWidgets.QLabel(self.statusFrame)
-        self.SSDstatusLabel.setAlignment(QtCore.Qt.AlignCenter)
-        self.SSDstatusLabel.setObjectName("SSDstatusLabel")
-        self.verticalLayout_6.addWidget(self.SSDstatusLabel)
+        self.extStoStatusLabel = QtWidgets.QLabel(self.statusFrame)
+        self.extStoStatusLabel.setMinimumSize(QtCore.QSize(84, 16))
+        self.extStoStatusLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.extStoStatusLabel.setObjectName("extStoStatusLabel")
+        self.verticalLayout_6.addWidget(self.extStoStatusLabel)
+        self.camStoStatusLabel = QtWidgets.QLabel(self.statusFrame)
+        self.camStoStatusLabel.setMinimumSize(QtCore.QSize(84, 16))
+        self.camStoStatusLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.camStoStatusLabel.setObjectName("camStoStatusLabel")
+        self.verticalLayout_6.addWidget(self.camStoStatusLabel)
         self.verticalLayout_4.addWidget(self.statusFrame)
         self.horizontalLayout.addWidget(self.sidebarWidget)
         self.bodyWidget = QtWidgets.QWidget(self.centralWidget)
@@ -380,8 +383,8 @@ class Ui_SortingPage(object):
         self.renommageBtn.setText(_translate("SortingPage", "Renommage    "))
         self.sauvegardeBtn.setText(_translate("SortingPage", "Sauvegarde"))
         self.reglagesBtn.setText(_translate("SortingPage", "Réglages"))
-        self.SDstatusLabel.setText(_translate("SortingPage", "💾 : ❌"))
-        self.SSDstatusLabel.setText(_translate("SortingPage", "🗡️ : ❌"))
+        self.extStoStatusLabel.setText(_translate("SortingPage", "🗡️ : 🔴"))
+        self.camStoStatusLabel.setText(_translate("SortingPage", "💾 : 🔴"))
         self.headerLabel.setText(_translate("SortingPage", "Sajin"))
         self.separationBtn.setText(_translate("SortingPage", "Séparation"))
         self.rangementBtn.setText(_translate("SortingPage", "Rangement"))

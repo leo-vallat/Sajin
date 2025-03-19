@@ -51,7 +51,7 @@ QPushButton{
 	background-color: #ffffff;
 	max-height: 1px;
 }
-#SDstatusLabel, #SSDstatusLabel{
+#camStoStatusLabel, #extStoStatusLabel{
 	color: #ffffff;
 	font-weight: bold;
 }
@@ -241,6 +241,12 @@ QPushButton{
        </item>
        <item>
         <widget class="QFrame" name="statusFrame">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>108</height>
+          </size>
+         </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
          </property>
@@ -292,9 +298,15 @@ QPushButton{
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="SDstatusLabel">
+           <widget class="QLabel" name="extStoStatusLabel">
+            <property name="minimumSize">
+             <size>
+              <width>84</width>
+              <height>16</height>
+             </size>
+            </property>
             <property name="text">
-             <string>💾 : ❌</string>
+             <string>🗡️ : 🔴</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -302,9 +314,15 @@ QPushButton{
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="SSDstatusLabel">
+           <widget class="QLabel" name="camStoStatusLabel">
+            <property name="minimumSize">
+             <size>
+              <width>84</width>
+              <height>16</height>
+             </size>
+            </property>
             <property name="text">
-             <string>🗡️ : ❌</string>
+             <string>💾 : 🔴</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>

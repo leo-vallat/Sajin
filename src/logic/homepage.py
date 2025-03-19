@@ -15,6 +15,7 @@ class HomePage(QMainWindow):
         self.ui = Ui_Homepage()
         self.ui.setupUi(self)
         self.ui.triBtn.clicked.connect(lambda: stacked_widget.setCurrentIndex(1))
+        self.update_ui()
         #Timer Initialization
         self.gen_update_timer = gen_update_timer
         self.gen_update_timer.timeout.connect(lambda: self.update_ui())
@@ -27,18 +28,8 @@ class HomePage(QMainWindow):
 
     def update_ui(self):
         ''' Update every ui element at the timer timeout '''
-        self.update_accueilBtn()
+        self.utils.update_status_labels(self.ui)
         self.update_storage_data()
-
-    def update_accueilBtn(self):
-        '''Update the text of the accueilBtn depending if a storage device is connected'''
-        storage_state, active_storage_path = self.utils.get_storage()
-        if storage_state:
-            self.ui.accueilBtn.setText("  Accueil 💾")
-            self.ui.accueilBtn.setToolTip(f"{active_storage_path[0]}")
-        else:
-            self.ui.accueilBtn.setText("  Accueil ❌")
-            self.ui.accueilBtn.setToolTip("Aucun dispositif connecté")
     
     def update_storage_data(self):
         ''' Update the values of card(1,2,3)InfoLabel '''
@@ -58,10 +49,10 @@ class HomePage(QMainWindow):
         nRAW = 0
         nJPEG = 0
         
-        storage_state, active_storage_path = self.utils.get_storage()
+        camera_storage_state, active_camera_storage_path = self.utils.get_camera_storage()
 
-        if storage_state:
-            for path in active_storage_path:
+        if camera_storage_state:
+            for path in active_camera_storage_path:
                 DCIM_path = os.path.join(path, 'DCIM')
                 pic_folder = [d for d in os.listdir(DCIM_path) if os.path.isdir(os.path.join(DCIM_path, d))]
                 for folder in pic_folder:

@@ -38,7 +38,8 @@ class SortingPage(QMainWindow):
     #     self.ui.suppressionBtn.clicked.connect(lambda: self.suppression)
         self.ui.modeCheckBox.stateChanged.connect(self.toggle_widgets)
         #Other attributes
-        self.storage_state, self.storage_device = self.utils.get_storage()
+        self.camera_storage_state, self.camera_storage_device = self.utils.get_camera_storage()
+        self.external_storage_state, self.external_storage_path = self.utils.get_external_storage()
         #Timers Initialization
         self.gen_update_tm = gen_update_tm
         self.gen_update_tm.timeout.connect(lambda: self.update_ui())
@@ -50,18 +51,8 @@ class SortingPage(QMainWindow):
 
     def update_ui(self):
         ''' Update every ui element at the timer timeout '''
-        self.storage_state, self.storage_device = self.utils.get_storage()
-        self.update_accueilBtn()
-    
-    def update_accueilBtn(self):
-        '''Update the text of the accueilBtn depending if a storage device is connected'''
-        storage_state, active_storage_path = self.utils.get_storage()
-        if storage_state:
-            self.ui.accueilBtn.setText("Accueil 💾")
-            self.ui.accueilBtn.setToolTip(f"{active_storage_path[0]}")
-        else:
-            self.ui.accueilBtn.setText("Accueil ❌")
-            self.ui.accueilBtn.setToolTip("Aucun dispositif connecté")
+        self.camera_storage_state, self.camera_storage_device = self.utils.get_camera_storage()
+        self.utils.update_status_labels(self.ui)
 
     @pyqtSlot(int)
     def toggle_widgets(self, state):
@@ -71,14 +62,13 @@ class SortingPage(QMainWindow):
         self.ui.nPicLine.setVisible(is_checked)
         
     def separation(self):
-        if self.storage_state:
+        if self.camera_storage_state:
             self.ui.stateLabel.setText("Séparation en cours ...")
             # Disable other action buttons
-            self.ui.coherenceBtn.setDisabled(True)
             self.ui.rangementBtn.setDisabled(True)
             self.ui.suppressionBtn.setDisabled(True)
             # Transfer photos
-            pic_folders_path = self.get_pic_folders_path()  
+            pic_folders_path = self.get_pic_folders_path() 
             worker = SeparationWorker(pic_folders_path,self.JPEG_FOLDER_PATH)
             worker.signal.finished.connect(self.on_separation_finished)
             QThreadPool.globalInstance().start(worker)
@@ -87,14 +77,13 @@ class SortingPage(QMainWindow):
 
     def get_pic_folders_path(self):
         '''Return the list of paths to folders containing the photos'''
-        DCIM_path = os.path.join(self.storage_device[0], 'DCIM')
+        DCIM_path = os.path.join(self.camera_storage_device[0], 'DCIM')
         return [os.path.join(DCIM_path, folder) for folder in os.listdir(DCIM_path) if os.path.isdir(os.path.join(DCIM_path, folder))]
 
     def on_separation_finished(self):
         '''Set value of stateLabel to 'Séparation terminée' for 3 seconds'''
         self.ui.stateLabel.setText("Séparation terminée")
         self.action_timer.start(3000)
-        self.ui.coherenceBtn.setDisabled(False)
         self.ui.rangementBtn.setDisabled(False)
         self.ui.suppressionBtn.setDisabled(False)
 
@@ -103,6 +92,9 @@ class SortingPage(QMainWindow):
         self.ui.stateLabel.setText(
             '''<span style="color:red">Aucun dispositif de stockage n'est connecté</span>''')
         self.action_timer.start(5000)
+
+    def rangement(self):
+        ''''''
 
     # def coherence(self) :
     #     self.labelEtat.setText("mise en cohérence en cours ...")
