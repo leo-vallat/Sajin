@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Homepage(object):
     def setupUi(self, Homepage):
         Homepage.setObjectName("Homepage")
-        Homepage.resize(723, 543)
+        Homepage.resize(723, 590)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)

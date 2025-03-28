@@ -1,3 +1,5 @@
 {
-    "external_storage": "/Volumes/Andúril"
+    "external_storage": "/Volumes/Andúril",
+    "base_dir": "/Volumes/Andúril/Prod/Photo",
+    "event_dirs": ["OG", "RT", "OG/JPEG", "OG/RAW"]
 }

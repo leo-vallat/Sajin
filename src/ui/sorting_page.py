@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_SortingPage(object):
     def setupUi(self, SortingPage):
         SortingPage.setObjectName("SortingPage")
-        SortingPage.resize(723, 543)
+        SortingPage.resize(723, 590)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -77,6 +77,21 @@ class Ui_SortingPage(object):
 "#eventNameLine, #nPicLine, #dateEdit{\n"
 "    border: 1px solid #e5e5e5;\n"
 "    border-radius: 4px;\n"
+"}\n"
+"#okBtn{\n"
+"    border: 1px solid black;\n"
+"    border-radius: 4px;\n"
+"    text-align: center;\n"
+"    padding: 4px;\n"
+"}\n"
+"#okBtn:disabled{\n"
+"    border: 1px solid #e5e5e5;\n"
+"    color: #e5e5e5;\n"
+"}\n"
+"#okBtn:pressed{\n"
+"    border: 1px solid  #65132d;\n"
+"    background-color: #65132d;\n"
+"    color: white;\n"
 "}")
         self.centralWidget.setObjectName("centralWidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.centralWidget)
@@ -263,6 +278,7 @@ class Ui_SortingPage(object):
         self.rangementBtn.setObjectName("rangementBtn")
         self.verticalLayout_3.addWidget(self.rangementBtn)
         self.suppressionBtn = QtWidgets.QPushButton(self.btnFrame)
+        self.suppressionBtn.setEnabled(True)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -295,6 +311,7 @@ class Ui_SortingPage(object):
         self.settingsWidget.setObjectName("settingsWidget")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.settingsWidget)
         self.verticalLayout_2.setContentsMargins(12, 12, 0, 10)
+        self.verticalLayout_2.setSpacing(5)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.labelReglages = QtWidgets.QLabel(self.settingsWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
@@ -319,7 +336,7 @@ class Ui_SortingPage(object):
         self.settingsFrame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.settingsFrame.setObjectName("settingsFrame")
         self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.settingsFrame)
-        self.verticalLayout_5.setContentsMargins(0, 0, 133, 12)
+        self.verticalLayout_5.setContentsMargins(0, 5, 130, 12)
         self.verticalLayout_5.setSpacing(13)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
         self.eventNameLine = QtWidgets.QLineEdit(self.settingsFrame)
@@ -333,9 +350,34 @@ class Ui_SortingPage(object):
         self.eventNameLine.setFrame(True)
         self.eventNameLine.setObjectName("eventNameLine")
         self.verticalLayout_5.addWidget(self.eventNameLine)
-        self.modeCheckBox = QtWidgets.QCheckBox(self.settingsFrame)
+        self.formatFrame = QtWidgets.QFrame(self.settingsFrame)
+        self.formatFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.formatFrame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.formatFrame.setObjectName("formatFrame")
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.formatFrame)
+        self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.rawJpegRadio = QtWidgets.QRadioButton(self.formatFrame)
+        self.rawJpegRadio.setObjectName("rawJpegRadio")
+        self.horizontalLayout_3.addWidget(self.rawJpegRadio)
+        self.rawOnlyRadio = QtWidgets.QRadioButton(self.formatFrame)
+        self.rawOnlyRadio.setObjectName("rawOnlyRadio")
+        self.horizontalLayout_3.addWidget(self.rawOnlyRadio)
+        self.jpegOnlyRadio = QtWidgets.QRadioButton(self.formatFrame)
+        self.jpegOnlyRadio.setObjectName("jpegOnlyRadio")
+        self.horizontalLayout_3.addWidget(self.jpegOnlyRadio)
+        self.verticalLayout_5.addWidget(self.formatFrame)
+        self.modeFrame = QtWidgets.QFrame(self.settingsFrame)
+        self.modeFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.modeFrame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.modeFrame.setObjectName("modeFrame")
+        self.verticalLayout_8 = QtWidgets.QVBoxLayout(self.modeFrame)
+        self.verticalLayout_8.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_8.setObjectName("verticalLayout_8")
+        self.modeCheckBox = QtWidgets.QCheckBox(self.modeFrame)
         self.modeCheckBox.setObjectName("modeCheckBox")
-        self.verticalLayout_5.addWidget(self.modeCheckBox)
+        self.verticalLayout_8.addWidget(self.modeCheckBox)
+        self.verticalLayout_5.addWidget(self.modeFrame)
         self.dateEdit = QtWidgets.QDateEdit(self.settingsFrame)
         self.dateEdit.setEnabled(True)
         self.dateEdit.setCalendarPopup(True)
@@ -346,6 +388,25 @@ class Ui_SortingPage(object):
         self.nPicLine.setObjectName("nPicLine")
         self.verticalLayout_5.addWidget(self.nPicLine)
         self.verticalLayout_2.addWidget(self.settingsFrame)
+        self.okBtnFrame = QtWidgets.QFrame(self.settingsWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.okBtnFrame.sizePolicy().hasHeightForWidth())
+        self.okBtnFrame.setSizePolicy(sizePolicy)
+        self.okBtnFrame.setMinimumSize(QtCore.QSize(100, 0))
+        self.okBtnFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.okBtnFrame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.okBtnFrame.setObjectName("okBtnFrame")
+        self.verticalLayout_7 = QtWidgets.QVBoxLayout(self.okBtnFrame)
+        self.verticalLayout_7.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_7.setObjectName("verticalLayout_7")
+        self.okBtn = QtWidgets.QPushButton(self.okBtnFrame)
+        self.okBtn.setEnabled(True)
+        self.okBtn.setMinimumSize(QtCore.QSize(0, 0))
+        self.okBtn.setObjectName("okBtn")
+        self.verticalLayout_7.addWidget(self.okBtn)
+        self.verticalLayout_2.addWidget(self.okBtnFrame, 0, QtCore.Qt.AlignHCenter)
         self.horizontalLayout_12.addWidget(self.settingsWidget)
         self.verticalLayout.addWidget(self.tidyingWidget, 0, QtCore.Qt.AlignTop)
         self.stateLabel = QtWidgets.QLabel(self.bodyWidget)
@@ -391,8 +452,12 @@ class Ui_SortingPage(object):
         self.suppressionBtn.setText(_translate("SortingPage", "Suppression"))
         self.labelReglages.setText(_translate("SortingPage", "Réglages de rangement"))
         self.eventNameLine.setPlaceholderText(_translate("SortingPage", "  Nom de l\'évènement"))
-        self.modeCheckBox.setText(_translate("SortingPage", "Mode Manuel"))
+        self.rawJpegRadio.setText(_translate("SortingPage", "Raw + Jpeg"))
+        self.rawOnlyRadio.setText(_translate("SortingPage", "Raw only"))
+        self.jpegOnlyRadio.setText(_translate("SortingPage", "Jpeg only"))
+        self.modeCheckBox.setText(_translate("SortingPage", "Mode semi automatique"))
         self.nPicLine.setPlaceholderText(_translate("SortingPage", "  Num des photos ( - )"))
+        self.okBtn.setText(_translate("SortingPage", "Ok "))
         self.stateLabel.setText(_translate("SortingPage", "TextLabel"))
 
 

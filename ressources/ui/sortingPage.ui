@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>723</width>
-    <height>543</height>
+    <height>590</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -82,6 +82,21 @@ QPushButton{
 #eventNameLine, #nPicLine, #dateEdit{
 	border: 1px solid #e5e5e5;
 	border-radius: 4px;
+}
+#okBtn{
+	border: 1px solid black;
+	border-radius: 4px;
+	text-align: center;
+	padding: 4px;
+}
+#okBtn:disabled{
+	border: 1px solid #e5e5e5;
+	color: #e5e5e5;
+}
+#okBtn:pressed{
+	border: 1px solid  #65132d;
+	background-color: #65132d;
+	color: white;
 }</string>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
@@ -489,6 +504,9 @@ QPushButton{
           </item>
           <item>
            <widget class="QPushButton" name="suppressionBtn">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -540,6 +558,9 @@ QPushButton{
              </sizepolicy>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
+             <property name="spacing">
+              <number>5</number>
+             </property>
              <property name="leftMargin">
               <number>12</number>
              </property>
@@ -594,10 +615,10 @@ QPushButton{
                  <number>0</number>
                 </property>
                 <property name="topMargin">
-                 <number>0</number>
+                 <number>5</number>
                 </property>
                 <property name="rightMargin">
-                 <number>133</number>
+                 <number>130</number>
                 </property>
                 <property name="bottomMargin">
                  <number>12</number>
@@ -625,16 +646,91 @@ QPushButton{
                  </widget>
                 </item>
                 <item>
-                 <widget class="QCheckBox" name="modeCheckBox">
-                  <property name="text">
-                   <string>Mode Manuel</string>
+                 <widget class="QFrame" name="formatFrame">
+                  <property name="frameShape">
+                   <enum>QFrame::StyledPanel</enum>
                   </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <layout class="QHBoxLayout" name="horizontalLayout_3">
+                   <property name="spacing">
+                    <number>-1</number>
+                   </property>
+                   <property name="leftMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QRadioButton" name="rawJpegRadio">
+                     <property name="text">
+                      <string>Raw + Jpeg</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QRadioButton" name="rawOnlyRadio">
+                     <property name="text">
+                      <string>Raw only</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QRadioButton" name="jpegOnlyRadio">
+                     <property name="text">
+                      <string>Jpeg only</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QFrame" name="modeFrame">
+                  <property name="frameShape">
+                   <enum>QFrame::StyledPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_8">
+                   <property name="leftMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QCheckBox" name="modeCheckBox">
+                     <property name="text">
+                      <string>Mode semi automatique</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
                  </widget>
                 </item>
                 <item>
                  <widget class="QDateEdit" name="dateEdit">
                   <property name="enabled">
                    <bool>true</bool>
+                  </property>
+                  <property name="displayFormat">
+                   <string>dd/MM/yyyy</string>
                   </property>
                   <property name="calendarPopup">
                    <bool>true</bool>
@@ -648,6 +744,58 @@ QPushButton{
                   </property>
                   <property name="placeholderText">
                    <string>  Num des photos ( - )</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item alignment="Qt::AlignHCenter">
+              <widget class="QFrame" name="okBtnFrame">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>100</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_7">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QPushButton" name="okBtn">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>Ok </string>
                   </property>
                  </widget>
                 </item>

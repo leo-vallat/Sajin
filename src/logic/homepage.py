@@ -54,17 +54,20 @@ class HomePage(QMainWindow):
         if camera_storage_state:
             for path in active_camera_storage_path:
                 DCIM_path = os.path.join(path, 'DCIM')
-                pic_folder = [d for d in os.listdir(DCIM_path) if os.path.isdir(os.path.join(DCIM_path, d))]
-                for folder in pic_folder:
-                    folder_path = os.path.join(DCIM_path, folder)
-                    for file in os.listdir(folder_path):
-                        if file.endswith(('.ARW', '.NEF', '.CR3')):
-                            nRAW += 1
-                            nPic += 1
-                        elif file.endswith(('.jpg', '.JPG')):
-                            nJPEG += 1
-                            nPic += 1
-            return [str(nPic), str(nRAW), str(nJPEG)]
+                if os.path.exists(DCIM_path):
+                    pic_folder = [d for d in os.listdir(DCIM_path) if os.path.isdir(os.path.join(DCIM_path, d))]
+                    for folder in pic_folder:
+                        folder_path = os.path.join(DCIM_path, folder)
+                        for file in os.listdir(folder_path):
+                            if file.endswith(('.ARW', '.NEF', '.CR3')):
+                                nRAW += 1
+                                nPic += 1
+                            elif file.endswith(('.jpg', '.JPG')):
+                                nJPEG += 1
+                                nPic += 1
+                    return [str(nPic), str(nRAW), str(nJPEG)]
+                else:
+                    return ['--','--','--']
         else:
             return ['--','--','--']
 
