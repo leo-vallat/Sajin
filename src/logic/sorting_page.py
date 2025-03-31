@@ -1,11 +1,13 @@
 import datetime
+import time
 import os
 from dotenv import load_dotenv
 from src.ui.sorting_page import Ui_SortingPage
 from src.utils.utils import Utils
-from src.utils.workers import SeparationWorker, StorageWorker
-from PyQt5.QtCore import pyqtSlot, QTimer, QThreadPool
-from PyQt5.QtWidgets import QMainWindow, QMessageBox
+from src.utils.workers import SeparationWorker, StorageWorker, RemoveWorker
+from PyQt5.QtCore import pyqtSlot, Qt, QTimer, QThreadPool
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QLabel
 from os import remove, mkdir, path, getenv
 # from PIL import Image, ExifTags
 
@@ -19,6 +21,7 @@ class SortingPage(QMainWindow):
         #Objects Initialization
         self.utils = Utils()
         self.ui = Ui_SortingPage()
+        self.threadpool = QThreadPool()
         #UI Setup
         self.ui.setupUi(self)
         #Widgets Value Initialization
@@ -27,17 +30,22 @@ class SortingPage(QMainWindow):
         self.ui.dateEdit.setDate(datetime.date.today())
         self.ui.stateLabel.setText("")
         #Widgets Visibility Initialization
-        self.ui.dateEdit.setVisible(False)
-        self.ui.nPicLine.setVisible(False)
-        self.ui.okBtn.setVisible(False)
-        self.ui.progressBar.setVisible(False)
+        self.ui.settingsWidget.setHidden(True)
+        self.ui.dateEdit.setHidden(True)
+        self.ui.nPicLine.setHidden(True)
+        self.ui.progressBar.setHidden(True)
         #Widgets Callback Initialization
         self.ui.accueilBtn.clicked.connect(lambda: stacked_widget.setCurrentIndex(0))
         self.ui.separationBtn.clicked.connect(lambda: self.separation())
-        self.ui.rangementBtn.clicked.connect(lambda: self.rangement())
-    #     self.ui.suppressionBtn.clicked.connect(lambda: self.suppression)
-        self.ui.okBtn.clicked.connect(lambda: self.ok_btn_is_cliked())
+        self.ui.rangementBtn.clicked.connect(lambda: self.storage())
+        self.ui.suppressionBtn.clicked.connect(lambda: self.removing())
+        self.ui.eventNameLine.textChanged.connect(self.eventNameLine_is_filled)
+        self.ui.rawJpegRadio.clicked.connect(self.hide_date_edit)
+        self.ui.rawOnlyRadio.clicked.connect(self.display_date_edit)
+        self.ui.jpegOnlyRadio.clicked.connect(self.hide_date_edit)
         self.ui.modeCheckBox.stateChanged.connect(self.toggle_widgets)
+        self.ui.okBtn.clicked.connect(lambda: self.ok_btn_is_cliked())
+        self.ui.cancelBtn.clicked.connect(lambda: self.on_storage_cancel())
         #Other attributes
         self.camera_storage_state, self.camera_storage_device = self.utils.get_camera_storage()
         self.external_storage_state, self.external_storage_path = self.utils.get_external_storage()
@@ -46,10 +54,16 @@ class SortingPage(QMainWindow):
         self.gen_update_tm.timeout.connect(lambda: self.update_ui())
         self.action_timer = QTimer()
         self.action_timer.setSingleShot(True)
-        self.action_timer.timeout.connect(lambda: self.reinitialize_state_label())
+        self.action_timer.timeout.connect(lambda: self.reset_state_label())
 
         print("sorting page initialized")
 
+    @pyqtSlot()
+    def eventNameLine_is_filled(self):
+        '''Returns True if the text is filled'''
+        return self.ui.okBtn.setEnabled(bool(self.ui.eventNameLine.text().strip()))
+
+    @pyqtSlot()
     def update_ui(self):
         ''' Update every ui element at the timer timeout '''
         self.camera_storage_state, self.camera_storage_device = self.utils.get_camera_storage()
@@ -62,20 +76,33 @@ class SortingPage(QMainWindow):
         is_checked = state==2
         self.ui.dateEdit.setVisible(is_checked)
         self.ui.nPicLine.setVisible(is_checked)
-        
+
+    @pyqtSlot()
+    def display_date_edit(self):
+        '''Set dateEdit visible even is modeCheckBox is not checked'''
+        self.ui.dateEdit.setVisible(True)
+
+    @pyqtSlot()
+    def hide_date_edit(self):
+        '''set dateEdit hidden'''
+        self.ui.dateEdit.setHidden(True)
+
+    @pyqtSlot()
     def separation(self):
         ''' Process séparation '''
         if self.camera_storage_state:
             pic_folders_path = self.get_pic_folders_path() 
             if pic_folders_path:
-                # Transfer photos
-                self.ui.stateLabel.setText("Séparation en cours ...")
-                # Disable other action buttons
-                self.ui.rangementBtn.setDisabled(True)
-                self.ui.suppressionBtn.setDisabled(True)
-                worker = SeparationWorker(pic_folders_path,self.JPEG_FOLDER_PATH)
-                worker.signal.finished.connect(self.on_separation_finished)
-                QThreadPool.globalInstance().start(worker)
+                if not self.utils.pics_in_folder(self.JPEG_FOLDER_PATH):
+                    self.ui.stateLabel.setText("Séparation en cours ...")
+                    self.ui.rangementBtn.setDisabled(True)
+                    self.ui.suppressionBtn.setDisabled(True)
+                    # Transfer photos
+                    worker = SeparationWorker(pic_folders_path,self.JPEG_FOLDER_PATH)
+                    worker.signal.finished.connect(self.on_separation_finished)
+                    self.threadpool.globalInstance().start(worker)
+                else:
+                    self.display_error_message("Photos dans le dossier de tri")
             else:
                 self.display_error_message("Photos non trouvé dans la carte SD")
                 return
@@ -90,23 +117,28 @@ class SortingPage(QMainWindow):
             return [os.path.join(DCIM_path, folder) for folder in os.listdir(DCIM_path) if os.path.isdir(os.path.join(DCIM_path, folder))]
         return None
 
+    def pics_in_JPEG_FOLDER(self):
+        '''Returns True if pics are already in the self.JPEG_FOLDER_PATH'''
+        
+    @pyqtSlot()
     def on_separation_finished(self):
         '''Set value of stateLabel to 'Séparation terminée' for 3 seconds'''
-        self.ui.stateLabel.setText("Séparation terminée")
+        self.display_success_message("Séparation terminée !")
+        self.reset_state_label()
         self.action_timer.start(3000)
-        self.ui.rangementBtn.setDisabled(False)
-        self.ui.suppressionBtn.setDisabled(False)
+        self.ui.rangementBtn.setEnabled(True)
+        self.ui.suppressionBtn.setEnabled(True)
 
-    def rangement(self):  # A TESTER
+    @pyqtSlot()
+    def storage(self):  # A TESTER
         ''' Stores photos in the external storage '''
-        print('RANGEMENT BUTTON CLICKED')
         if self.camera_storage_state: 
             if self.external_storage_state:
-                print('SD AND SSD OK')
                 self.ui.stateLabel.setText("En attente, validation des réglages ...")
-                self.ui.separationBtn.setDisabled(True)
-                self.ui.suppressionBtn.setDisabled(True)
-                self.ui.okBtn.setVisible(True)
+                self.ui.btnFrame.setHidden(True)
+                self.ui.settingsWidget.setVisible(True)
+                self.ui.okBtn.setDisabled(True)
+                return
             else:
                 self.display_error_message("SSD manquant")
                 return 
@@ -114,15 +146,13 @@ class SortingPage(QMainWindow):
             self.display_error_message("Carte SD manquante")
             return           
 
-    def ok_btn_is_cliked(self):  # A TESTER
+    @pyqtSlot()
+    def ok_btn_is_cliked(self):  
         '''Retrieve the data and start the storage'''
-        print('OKAY BUTTON CLIKED')
         pic_folders_path = self.get_pic_folders_path()
         if pic_folders_path:
-            print('PIC FOLDER PATH OK')
             event_name = self.ui.eventNameLine.text().strip()
             if event_name:
-                print('EVENT NAME OK')
                 photo_format = self.get_radio_value()
                 semi_auto_mode = self.ui.modeCheckBox.isChecked()
                 event_date = self.ui.dateEdit.text().strip()
@@ -130,7 +160,7 @@ class SortingPage(QMainWindow):
                 if semi_auto_mode and not part:
                     self.display_error_message("Préciser la partie des photos à ranger")
                     return
-                print('START STORAGE')
+                self.ui.cancelBtn.setDisabled(True)
                 self.ui.stateLabel.setText('Rangement en cours ...')
                 worker = StorageWorker(
                     self.JPEG_FOLDER_PATH,
@@ -141,145 +171,104 @@ class SortingPage(QMainWindow):
                     event_date,
                     part
                 )
+                worker.signal.error.connect(self.on_storage_error)
                 worker.signal.finished.connect(self.on_storage_finished)
-                QThreadPool.globalInstance().start(worker)
+                self.threadpool.globalInstance().start(worker, )
             else:
                 self.display_error_message("Entrez un nom d'évènement dans un premier temps")
                 return
         else:
             self.display_error_message("Photos non trouvé dans la carte SD")
-            self.ui.separationBtn.setDisabled(False)
-            self.ui.suppressionBtn.setDisabled(False)
-            self.ui.okBtn.setVisible(False)
-            self.reinitialize_state_label()
+            self.ui.eventNameLine.setText("")
+            self.ui.btnFrame.setVisible(True)
+            self.ui.settingsWidget.setHidden(True)           
+            self.reset_state_label()
             return
 
     def get_radio_value(self):
         '''Return the photo format selected'''
         if self.ui.rawJpegRadio.isChecked():
-            print('RADIO VALUE : RJ')
             return 'RJ'
         elif self.ui.rawOnlyRadio.isChecked():
-            print('RADIO VALUE : R')
             return 'R'
         elif self.ui.jpegOnlyRadio.isChecked():
-            print('RADIO VALUE : J')
             return 'J'
 
-    def on_storage_finished(self):  # A TESTER
+    @pyqtSlot(str)
+    def on_storage_error(self, message):
+        ''''''
+        self.display_error_message(message)
+        self.on_storage_cancel()
+
+    @pyqtSlot()
+    def on_storage_finished(self):  
         '''Set ui back to normal status and display message'''
-        print('STORAGE FINISHED')
-        self.ui.stateLabel.setText("Rangement terminé")
-        self.action_timer.start(5000)
-        self.ui.separationBtn.setDisabled(False)
-        self.ui.suppressionBtn.setDisabled(False)
+        self.display_success_message("Rangement terminé !")
+        self.reset_state_label()
         self.ui.eventNameLine.setText("")
-        self.ui.okBtn.setVisible(False)
+        self.ui.rawJpegRadio.click()
+        self.ui.cancelBtn.setEnabled(True)
+        self.ui.btnFrame.setVisible(True)
+        self.ui.settingsWidget.setHidden(True)
 
         if self.ui.modeCheckBox.isChecked():  # Semi Automatic mode
             # Future update
             pass
 
-    # def coherence(self) :
-    #     self.labelEtat.setText("mise en cohérence en cours ...")
+    @pyqtSlot()
+    def on_storage_cancel(self):
+        ''''''
+        self.ui.eventNameLine.setText("")
+        self.ui.rawJpegRadio.click()
+        self.ui.btnFrame.setVisible(True)
+        self.ui.settingsWidget.setHidden(True)
 
-    #     fPathJ = list(glob('/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Jpeg/*'))
-    #     fPathR = list(glob('/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Raw/*'))
+        if self.ui.modeCheckBox.isChecked():  # Semi Automatic mode
+            # Future update
+            pass
 
-    #     for pic_pathR in fPathR :															#Itération sur chaque éléments des deux listes (correspondant à chaque photo)
-    #         garder = False 																	#Condition de garder une photo
-
-    #         for pic_pathJ in fPathJ :
-    #             if pic_pathJ[-8:-4] == pic_pathR[-8:-4] : 								#Condition pour le tri de la photo avec les 2 numéros des photos  
-    #                 garder = True 															#La condition passe à true si les numéros de photos correspondent
-
-    #         if garder == False :
-    #             remove(pic_pathR) 															#Efface la photo si condition est fausse
-
-    #     self.labelEtat.setText("mise en cohérence ok")
-    #     self.timer.start(3000)
-
-
-    # def rangement(self) :
-    #     fPathJ = list(glob('/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Jpeg/*'))
-    #     fPathR = list(glob('/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Raw/*'))
-
-    #     lDir = ['/OG', '/RT', '/OG/JPEG', '/OG/RAW']
-    #     lMonth = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
-        
-    #     pathDate = fPathJ[0] 																			#Création du chemin de la photo qui donnera la date du shooting 
-        # date = Image.open(pathDate)._getexif()[36867]
-
-    #     year = date[0:4]																				#On récupère l'année, le mois et le jour 
-    #     month = date[5:7]
-    #     day = date[8:10]
-
-    #     if month[0] == 0 :
-    #         monthLetter = month + ' ' + lMonth[int(month[1])-1]
-    #     else :
-    #         monthLetter = month + ' ' + lMonth[int(month)-1]
-
-
-    #     if not path.exists(self.getpic_path(year)) : 														#Création des dossiers année, mois si nécessaire
-    #         mkdir(self.getpic_path(year))
-
-    #     if not path.exists(self.getpic_path(year + '/' + monthLetter)) :
-    #         mkdir(self.getpic_path(year + '/' + monthLetter))	
-
-    #     mkdir(self.getPathEvnmt(year, monthLetter, month, day, evnmt))										#Création du dossier de l'évènement
-
-    #     for i in range(len(lDir)) :																		#Création des autres dossier	
-    #         mkdir(self.getPathDirPhoto(year, monthLetter, month, day, evnmt, lDir[i]))
-
-
-    #     for pic_path in fPathJ :																		#Copie des photos dans le DDE
-    #         copy(pic_path, self.getPathDirPhoto(year, monthLetter, month, day, evnmt, '/OG/JPEG'))
-
-    #     for pic_path in fPathR :
-    #         copy(pic_path, self.getPathDirPhoto(year, monthLetter, month, day, evnmt, '/OG/RAW'))
-
-    #     self.labelEtat.setText("rangement ok")
-    #     self.timer.start(3000)
-
-    #     self.btnSeparation.show()
-    #     self.btnCohérence.show()
-    #     self.btnRangement.show()
-    #     self.btnSuppression.show()
-
-    #     self.labelRangement.hide()
-    #     self.evenementEdit.hide()
-    #     self.btnOk.hide()
-
-
-    # def suppression(self, fPathSD) :
-    #     self.labelEtat.setText("Suppression en cours ...")
-
-    #     fPathJ = list(glob('/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Jpeg/*'))
-    #     fPathR = list(glob('/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Raw/*'))
-
-    #     lPath = [fPathSD, fPathJ, fPathR]
-    #     ls = ['SD', 'jpeg', 'raw']
-        
-    #     for path, directory in zip(lPath, ls) :
-    #             for pic_path in path :
-    #                 remove(pic_path)
-    #             self.labelEtat.setText('Suppression ' + directory + ' ok')
-    #             self.timer.start(1000)
-    #     self.labelEtat.setText("Suppression ok\nArvi Pa SIUUUUUUU")
-    #     self.timer.start(3000)
-
-
-    # def getpic_path(self, path) :     
-    #     return '/Volumes/Andúril/Prod/Photo/' + path 
-
-
-    # def getPathEvnmt(self, year, monthLetter, month, day, evnmt) :     
-    #     return self.getpic_path(year + '/' + monthLetter + '/' + day + ':' + month + ' ' + evnmt)
-
-
-    # def getPathDirPhoto(self, year, monthLetter, month, day, evnmt, path) :   
-    #     return self.getPathEvnmt(year, monthLetter, month, day, evnmt) + path
+    @pyqtSlot()
+    def removing(self):
+        ''''''
+        if not self.camera_storage_state:
+            self.display_error_message("Carte SD manquante")
+            return
+        self.ui.stateLabel.setText("Suppression en cours ...")
+        self.ui.separationBtn.setDisabled(True)
+        self.ui.rangementBtn.setDisabled(True)
+        # Transfer photos
+        worker = RemoveWorker(self.JPEG_FOLDER_PATH, self.camera_storage_device)
+        worker.signal.error.connect(self.on_removing_error)
+        worker.signal.finished.connect(self.on_removing_finished)
+        self.threadpool.globalInstance().start(worker)
+            
+    @pyqtSlot(str)
+    def on_removing_error(self, message):
+        ''''''
+        print(message)
+        self.display_error_message(message)
+        self.reset_state_label()
+        self.ui.separationBtn.setEnabled(True)
+        self.ui.rangementBtn.setEnabled(True)
     
+    @pyqtSlot()
+    def on_removing_finished(self):
+        self.display_success_message("Suppression terminée !")
+        self.reset_state_label()
+        self.ui.separationBtn.setEnabled(True)
+        self.ui.rangementBtn.setEnabled(True)
+
+
+    
+    def display_success_message(self, message):
+        '''Dsiplay a QMessageBox with the success message'''
+        error_popup = QMessageBox()
+        error_popup.setWindowTitle("Succès")
+        error_popup.setIconPixmap(QIcon("ressources/icons/white_heavy_check_mark.svg").pixmap(64,64))
+        error_popup.setText(message)
+        error_popup.setStandardButtons(QMessageBox.StandardButton.Ok)
+        error_popup.exec_()
+
     def display_error_message(self, message):
         '''Display a QMessageBox with the error message'''
         error_popup = QMessageBox()
@@ -289,7 +278,7 @@ class SortingPage(QMainWindow):
         error_popup.setStandardButtons(QMessageBox.StandardButton.Ok)
         error_popup.exec_()
 
-    def reinitialize_state_label(self):
+    def reset_state_label(self):
         '''Reinitialize the state label to "".'''
         self.ui.stateLabel.setText("")
 '''
@@ -322,13 +311,13 @@ class Tri(FenetrePrincipale):
         
         self.btnSeparation.clicked.connect(lambda : self.separation(fPathSD))
         self.btnCohérence.clicked.connect(self.coherence)
-        self.btnRangement.clicked.connect(self.rangement)
+        self.btnRangement.clicked.connect(self.storage)
         self.btnSuppression.clicked.connect(lambda : self.suppression(fPathSD))
 
         self.labelEtat = QLabel("")
         layout.addWidget(self.labelEtat)
 
-        self.labelRangement = QLabel("rangement")
+        self.labelRangement = QLabel("storage")
         layout.addWidget(self.labelRangement)
         self.labelRangement.hide()
 
@@ -381,7 +370,7 @@ class Tri(FenetrePrincipale):
         self.timer.start(3000)
 
 
-    def rangement(self) :
+    def storage(self) :
         self.btnSeparation.hide()
         self.btnCohérence.hide()
         self.btnRangement.hide()
@@ -394,7 +383,7 @@ class Tri(FenetrePrincipale):
         self.okLoop.exec_()
 
         evnmt = self.evenementEdit.text()
-        self.labelEtat.setText("rangement en cours ...")
+        self.labelEtat.setText("storage en cours ...")
         
         fPathJ = list(glob('/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Jpeg/*'))
         fPathR = list(glob('/Users/leopold/Library/Mobile Documents/com~apple~CloudDocs/Photo/Raw/*'))
@@ -433,7 +422,7 @@ class Tri(FenetrePrincipale):
         for pic_path in fPathR :
             copy(pic_path, self.getPathDirPhoto(year, monthLetter, month, day, evnmt, '/OG/RAW'))
 
-        self.labelEtat.setText("rangement ok")
+        self.labelEtat.setText("storage ok")
         self.timer.start(3000)
 
         self.btnSeparation.show()

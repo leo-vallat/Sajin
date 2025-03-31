@@ -1,5 +1,6 @@
 import os
 import shutil
+import sys
 import time
 from PIL import Image, ExifTags
 from PyQt5.QtCore import QRunnable, pyqtSlot, QObject, pyqtSignal
@@ -13,9 +14,9 @@ class SeparationWorker(QRunnable):
     def __init__(self, pic_folders_path, JPEG_FOLDER_PATH):
         super().__init__()
         self.utils = Utils()
+        self.signal = Signal()
         self.pic_folders_path = pic_folders_path
         self.JPEG_FOLDER_PATH = JPEG_FOLDER_PATH
-        self.signal = Signal()
 
     @pyqtSlot()
     def run(self):
@@ -41,34 +42,32 @@ class StorageWorker(QRunnable):
         self.semi_auto_mode = semi_auto_mode
         self.initialize_date_attr(event_date)
         self.part = part
-        time.sleep(10)
         self.external_storage_jpeg_path = os.path.join(self.utils.get_event_dir_path(self.day, self.month, self.year, self.event_name), 'OG', 'JPEG')
         self.external_storage_raw_path = os.path.join(self.utils.get_event_dir_path(self.day, self.month, self.year, self.event_name), 'OG', 'RAW')
 
-    def initialize_date_attr(self, event_date):
+    def initialize_date_attr(self, UI_event_date):
         '''Initialize date, month and day based on event_date'''
         if not self.semi_auto_mode:  # Auto mode
             if self.photo_format == 'RJ' or self.photo_format == 'J':
                 path = self.utils.get_glob_list(self.JPEG_FOLDER_PATH)[0]  # get the first path containing '.JPEG'
-            else :
-                for folder_path in self.pic_folders_path:
-                    paths = self.utils.get_glob_list(folder_path)
-                    path = next((path for path in paths if '.ARW' in path), None)  # Get the first path containing '.ARW'
-                    if path:
-                        break                
-            event_date = Image.open(path)._getexif()[36867]
-
-        event_date, _ = event_date.split(' ')
-        print(event_date)
-        # Initialize day, month, year
-        self.year, self.month, self.day = event_date.split(':')
-
+                event_date = Image.open(path)._getexif()[36867]       
+                event_date = event_date.split(' ')[0].split(':')
+            else:
+                print('RAW ONLY')
+                event_date = UI_event_date.split('/')
+                event_date.reverse()  
+        else:  # Semi auto mode
+            event_date = UI_event_date.split('/').reverse()
+        
+        self.year, self.month, self.day = event_date  # Initialize day, month, year
+        
+        
         print('DAY : ', self.day)
         print('MONTH : ', self.month)
         print('YEAR : ', self.year)
 
     @pyqtSlot()
-    def run(self):  # A TESTER
+    def run(self):
         ''''''
         if self.semi_auto_mode:  # Semi auto mode
             if self.photo_format == 'RJ':
@@ -94,7 +93,7 @@ class StorageWorker(QRunnable):
         self.signal.finished.emit()
         return
     
-    def store_raw_and_jpeg(self, part='full'):  # A TESTER
+    def store_raw_and_jpeg(self, part='full'):
         '''FULL PART ONLY FOR NOW'''
         nj = 0
         nr = 0
@@ -131,39 +130,60 @@ class StorageWorker(QRunnable):
             nr += 1
         print(f"{nr} RAW STORED")
 
-    def create_event_dirs(self):  # A TESTER
-        '''Create all the directories necessary in the event'''
+    def create_event_dirs(self):
+        '''
+        Creates all the following directories if necessary.
+
+        - Year (if necessary)
+            - Month (if necessary)
+                - Event
+                    - OG
+                        - JPEG
+                        - RAW
+                    - RT
+        '''
         year_dir_path = os.path.join(self.utils.get_external_storage_base_dir(), self.year)
         month_dir_path = os.path.join(year_dir_path, self.utils.get_month_dir_name(self.month))
         event_dir_path = os.path.join(month_dir_path, f"{self.day}:{self.month} {self.event_name}")
-
-        
-
-        # Create year and month dir if necessary
         try:
-            if not os.path.exists(year_dir_path):
+            if not os.path.exists(year_dir_path): 
                 os.mkdir(year_dir_path)
-        except Exception as e:
-            self.signal.error.emit(f"[create_event_dirs] Erreur lors de la création du dossier 'Année' : {e}")
-            return
-        try:
             if not os.path.exists(month_dir_path):
                 os.mkdir(month_dir_path)
-        except Exception as e:
-            self.signal.error.emit(f"[create_event_dirs] Erreur lors de la création du dossier 'Mois' : {e}")
-            return
-        # Create event dir
-        try:
-            os.mkdir(event_dir_path)  
-        except Exception as e:
-            self.signal.error.emit(f"[create_event_dirs] Erreur lors de la création du dossier de l'évènement : {e}")
-            return
-        print('YEAR, MONTH AND EVENT DIR CREATED')
-        # Create OG, RT, OG/JPEG and OG/RAW dir
-        try:
+            os.mkdir(event_dir_path)
             for dir in self.utils.get_external_storage_event_dirs():
                 os.mkdir(os.path.join(event_dir_path, dir))
         except Exception as e:
-            self.signal.error.emit(f"[create_event_dirs] Erreur lors de la création d'un sous-dossier de l'évènement : {e}")
+            self.signal.error.emit(f"[create_event_dirs] Erreur lors de la création d'un dossier : {e}")
             return
-        print('OG, RT, OG/JPEG AND OG/RAW DIR CREATED')
+        print('DIR CREATED')
+
+
+class RemoveWorker(QRunnable):
+    def __init__(self, JPEG_FOLDER_PATH, camera_storage_path):
+        super().__init__()
+        self.utils = Utils()
+        self.signal = Signal()
+        self.JPEG_FOLDER_PATH = JPEG_FOLDER_PATH
+        self.camera_storage_path = camera_storage_path
+        print(camera_storage_path)
+    
+    @pyqtSlot()
+    def run(self):
+        try :
+            # Remove jpegs from self.JPEG_FOLDER_PATH
+            jpegs = self.utils.get_glob_list(self.JPEG_FOLDER_PATH)
+            self.remove_element_from_dir(jpegs)
+            # Remove folders from DCIM in the SD Card
+            DCIM_path = os.path.join(self.camera_storage_path[0], 'DCIM')
+            if os.path.exists(DCIM_path):
+                pic_folders = self.utils.get_glob_list(DCIM_path)
+                self.remove_element_from_dir(pic_folders)
+        except Exception as e:
+            self.signal.error.emit(f"Erreur lors de la suppression des photos : {e}")
+        else:
+            self.signal.finished.emit()
+        
+    def remove_element_from_dir(self, glob_list):
+        for element in glob_list:
+            shutil.rmtree(element)

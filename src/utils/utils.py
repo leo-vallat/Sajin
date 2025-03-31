@@ -94,3 +94,11 @@ class Utils():
             label.setText(new_text)
         if tooltip and label.toolTip() != tooltip:
             label.setToolTip(tooltip)
+
+    #====== other function ======#
+    def pics_in_folder(self, folder, extension='JPG'):
+        '''Returns True if at least one file with the right extension is in the folder'''
+        for file in self.get_glob_list(folder):
+            if file.endswith(extension):
+                return True
+        return False
