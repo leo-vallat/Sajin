@@ -96,6 +96,7 @@ class SortingPage(QMainWindow):
             if pic_folders_path:
                 if self.utils.get_storage_data()[2] != '0':  # Number of jpeg
                     if not self.utils.pics_in_folder(self.JPEG_FOLDER_PATH):
+                        # UI update
                         self.ui.stateLabel.setText("Séparation en cours ...")
                         self.ui.rangementBtn.setDisabled(True)
                         self.ui.suppressionBtn.setDisabled(True)
@@ -127,7 +128,7 @@ class SortingPage(QMainWindow):
         show_in_file_manager(self.JPEG_FOLDER_PATH)
 
     @pyqtSlot()
-    def storage(self):  # A TESTER
+    def storage(self):
         ''' Stores photos in the external storage '''
         if self.camera_storage_state: 
             if self.external_storage_state:
@@ -154,33 +155,32 @@ class SortingPage(QMainWindow):
                 semi_auto_mode = self.ui.modeCheckBox.isChecked()
                 event_date = self.ui.dateEdit.text().strip()
                 part = self.ui.nPicLine.text().strip()
-                if semi_auto_mode and not part:
+                if not semi_auto_mode or part:
+                    # UI update
+                    self.ui.okBtn.setDisabled(True)
+                    self.ui.cancelBtn.setDisabled(True)
+                    self.ui.stateLabel.setText('Rangement en cours ...')
+                    # Store photos
+                    worker = StorageWorker(
+                        self.JPEG_FOLDER_PATH,
+                        pic_folders_path, 
+                        event_name, 
+                        photo_format, 
+                        semi_auto_mode,
+                        event_date,
+                        part
+                    )
+                    worker.signal.error.connect(self.on_storage_error)
+                    worker.signal.finished.connect(self.on_storage_finished)
+                    self.threadpool.globalInstance().start(worker, )
+                else:
                     self.display_error_message("Préciser la partie des photos à ranger")
-                    return
-                self.ui.cancelBtn.setDisabled(True)
-                self.ui.stateLabel.setText('Rangement en cours ...')
-                worker = StorageWorker(
-                    self.JPEG_FOLDER_PATH,
-                    pic_folders_path, 
-                    event_name, 
-                    photo_format, 
-                    semi_auto_mode,
-                    event_date,
-                    part
-                )
-                worker.signal.error.connect(self.on_storage_error)
-                worker.signal.finished.connect(self.on_storage_finished)
-                self.threadpool.globalInstance().start(worker, )
             else:
                 self.display_error_message("Entrez un nom d'évènement dans un premier temps")
-                return
         else:
             self.display_error_message("Photos non trouvé dans la carte SD")
-            self.ui.eventNameLine.setText("")
-            self.ui.btnFrame.setVisible(True)
-            self.ui.settingsWidget.setHidden(True)           
-            self.reset_state_label()
-            return
+            self.on_storage_cancel()          
+        return
 
     def get_radio_value(self):
         '''Return the photo format selected'''
@@ -202,11 +202,9 @@ class SortingPage(QMainWindow):
         '''Set ui back to normal status and display message'''
         self.display_success_message("Rangement terminé !")
         self.reset_state_label()
-        self.ui.eventNameLine.setText("")
-        self.ui.rawJpegRadio.click()
+        self.ui.okBtn.setEnabled(True)
         self.ui.cancelBtn.setEnabled(True)
-        self.ui.btnFrame.setVisible(True)
-        self.ui.settingsWidget.setHidden(True)
+        self.on_storage_cancel()
 
         if self.ui.modeCheckBox.isChecked():  # Semi Automatic mode
             # Future update
