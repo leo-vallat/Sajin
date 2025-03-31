@@ -19,11 +19,6 @@ class HomePage(QMainWindow):
         #Timer Initialization
         self.gen_update_timer = gen_update_timer
         self.gen_update_timer.timeout.connect(lambda: self.update_ui())
-        #Storage Value Initialization
-        # storage_data = self.get_storage_data()
-        # self.ui.card1InfoLabel.setText(storage_data[0])
-        # self.ui.card2InfoLabel.setText(storage_data[1])
-        # self.ui.card3InfoLabel.setText(storage_data[2])
         print("homepage initialized")
 
     def update_ui(self):

@@ -70,7 +70,6 @@ class StorageWorker(QRunnable):
             elif self.photo_format == 'R':
                 pass
         else:  # Auto mode
-            print('AUTO MODE')
             self.create_event_dirs()
             try:
                 if self.photo_format == 'RJ':
@@ -100,8 +99,6 @@ class StorageWorker(QRunnable):
                 new_raw_path = os.path.join(self.external_storage_raw_path, raw_path.split('/')[-1].strip())
                 shutil.copy(raw_path, new_raw_path)  # Copy raw
                 nr += 1
-        print(f"{nj} JPEG STORED")
-        print(f"{nr} RAW STORED")
 
     def store_jpeg(self, part='full'):  # A TESTER
         '''FULL PART ONLY FOR NOW'''
@@ -111,7 +108,6 @@ class StorageWorker(QRunnable):
             new_jpeg_path = os.path.join(self.external_storage_jpeg_path, jpeg_path.split('/')[-1].strip())
             shutil.copy(jpeg_path, new_jpeg_path)  # Copy jpeg
             nj += 1
-        print(f"{nj} JPEG STORED")
 
     def store_raw(self, part='full'):  # A TESTER
         '''FULL PART ONLY FOR NOW'''
@@ -121,7 +117,6 @@ class StorageWorker(QRunnable):
             new_raw_path = os.path.join(self.external_storage_raw_path, raw_path.split('/')[-1].strip())
             shutil.copy(raw_path, new_raw_path)  # Copy raw
             nr += 1
-        print(f"{nr} RAW STORED")
 
     def create_event_dirs(self):
         '''
@@ -149,7 +144,6 @@ class StorageWorker(QRunnable):
         except Exception as e:
             self.signal.error.emit(f"[create_event_dirs] Erreur lors de la création d'un dossier : {e}")
             return
-        print('DIR CREATED')
 
 
 class RemoveWorker(QRunnable):

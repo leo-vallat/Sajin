@@ -56,7 +56,6 @@ class SortingPage(QMainWindow):
         self.action_timer = QTimer()
         self.action_timer.setSingleShot(True)
         self.action_timer.timeout.connect(lambda: self.reset_state_label())
-
         print("sorting page initialized")
 
     @pyqtSlot()
@@ -252,7 +251,6 @@ class SortingPage(QMainWindow):
     @pyqtSlot(str)
     def on_removing_error(self, message):
         ''''''
-        print(message)
         self.display_error_message(message)
         self.reset_state_label()
         self.ui.separationBtn.setEnabled(True)
