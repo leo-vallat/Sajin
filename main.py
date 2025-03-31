@@ -4,6 +4,7 @@ import sys
 from src.logic.homepage import HomePage  
 from src.logic.sorting_page import SortingPage
 
+
 class MainApp(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()

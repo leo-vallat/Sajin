@@ -1,10 +1,7 @@
-import json
-import os
-import sys
 from src.ui.homepage import Ui_Homepage
 from src.utils.utils import Utils
-from PyQt5.QtCore import QTimer
-from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QLabel, QToolBar, QAction
+from PyQt5.QtWidgets import QMainWindow
+
 
 class HomePage(QMainWindow):
     """Page d'accueil"""

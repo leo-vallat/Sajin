@@ -10,7 +10,6 @@ from PyQt5.QtCore import pyqtSlot, QTimer, QThreadPool
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow, QMessageBox
 from os import getenv
-# from PIL import Image, ExifTags
 
 
 class SortingPage(QMainWindow):

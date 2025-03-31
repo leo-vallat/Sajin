@@ -1,14 +1,14 @@
 import os
 import shutil
-import sys
-import time
-from PIL import Image, ExifTags
+from PIL import Image
 from PyQt5.QtCore import QRunnable, pyqtSlot, QObject, pyqtSignal
 from src.utils.utils import Utils
+
 
 class Signal(QObject):
     finished = pyqtSignal(str)
     error = pyqtSignal(str)
+
 
 class SeparationWorker(QRunnable):  
     def __init__(self, pic_folders_path, JPEG_FOLDER_PATH):

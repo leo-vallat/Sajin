@@ -2,6 +2,7 @@ import glob
 import json
 import os
 
+
 class Utils():
     def __init__(self):
         self.camera_storage_json = 'data/camera_storage.json'
