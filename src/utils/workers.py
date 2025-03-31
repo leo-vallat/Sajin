@@ -53,18 +53,11 @@ class StorageWorker(QRunnable):
                 event_date = Image.open(path)._getexif()[36867]       
                 event_date = event_date.split(' ')[0].split(':')
             else:
-                print('RAW ONLY')
                 event_date = UI_event_date.split('/')
                 event_date.reverse()  
         else:  # Semi auto mode
             event_date = UI_event_date.split('/').reverse()
-        
         self.year, self.month, self.day = event_date  # Initialize day, month, year
-        
-        
-        print('DAY : ', self.day)
-        print('MONTH : ', self.month)
-        print('YEAR : ', self.year)
 
     @pyqtSlot()
     def run(self):
@@ -178,12 +171,16 @@ class RemoveWorker(QRunnable):
             DCIM_path = os.path.join(self.camera_storage_path[0], 'DCIM')
             if os.path.exists(DCIM_path):
                 pic_folders = self.utils.get_glob_list(DCIM_path)
-                self.remove_element_from_dir(pic_folders)
+                self.remove_element_from_sd_card(pic_folders)
         except Exception as e:
             self.signal.error.emit(f"Erreur lors de la suppression des photos : {e}")
         else:
             self.signal.finished.emit()
         
     def remove_element_from_dir(self, glob_list):
+        for element in glob_list:
+            os.remove(element)
+
+    def remove_element_from_sd_card(self, glob_list):
         for element in glob_list:
             shutil.rmtree(element)
