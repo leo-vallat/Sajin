@@ -153,30 +153,23 @@ class StorageWorker(QRunnable):
 
 
 class RemoveWorker(QRunnable):
-    def __init__(self, JPEG_FOLDER_PATH, camera_storage_path):
+    def __init__(self, jpegs, pic_folders):
         super().__init__()
         self.utils = Utils()
         self.signal = Signal()
-        self.JPEG_FOLDER_PATH = JPEG_FOLDER_PATH
-        self.camera_storage_path = camera_storage_path
-        print(camera_storage_path)
+        self.jpegs = jpegs
+        self.pic_folders = pic_folders
     
     @pyqtSlot()
-    def run(self):
-        try :
-            # Remove jpegs from self.JPEG_FOLDER_PATH
-            jpegs = self.utils.get_glob_list(self.JPEG_FOLDER_PATH)
-            self.remove_element_from_dir(jpegs)
-            # Remove folders from DCIM in the SD Card
-            DCIM_path = os.path.join(self.camera_storage_path[0], 'DCIM')
-            if os.path.exists(DCIM_path):
-                pic_folders = self.utils.get_glob_list(DCIM_path)
-                self.remove_element_from_sd_card(pic_folders)
-        except Exception as e:
-            self.signal.error.emit(f"Erreur lors de la suppression des photos : {e}")
-        else:
-            self.signal.finished.emit('')
-        
+    def run(self):        
+            try :
+                self.remove_element_from_dir(self.jpegs)
+                self.remove_element_from_sd_card(self.pic_folders)
+            except Exception as e:
+                self.signal.error.emit(f"Erreur lors de la suppression des photos : {e}")
+            else:
+                self.signal.finished.emit('')
+
     def remove_element_from_dir(self, glob_list):
         for element in glob_list:
             os.remove(element)

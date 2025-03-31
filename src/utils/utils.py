@@ -12,11 +12,49 @@ class Utils():
         '''return a tuple with the state of the storage and the path of SD Card or SSD that are active'''
         with open(self.camera_storage_json, 'r') as f:
                 camera_storage = json.load(f)
-        active_storage_path = [path for path in camera_storage['external_storage'] if os.path.exists(path)]
-        if active_storage_path:
-            return (True, active_storage_path)
-        return (False, [])
+        for path in camera_storage['external_storage']:
+            if os.path.exists(path):
+                return (True, path)
+        return (False, None)
+
+    def get_pic_folders_path(self):
+        '''Return the list of paths to folders containing the photos'''
+        DCIM_path = os.path.join(self.get_camera_storage()[1], 'DCIM')
+        if os.path.exists(DCIM_path) and len(os.listdir(DCIM_path)):
+            return [os.path.join(DCIM_path, folder) for folder in os.listdir(DCIM_path) if os.path.isdir(os.path.join(DCIM_path, folder))]
+        return None
+
+    def get_storage_data(self):
+        '''
+        Get the number of photos stored at camera_storage paths
         
+        !!! Working for Sony environnement only !!!
+        '''
+        nPic = 0
+        nRAW = 0
+        nJPEG = 0
+        
+        camera_storage_state, active_camera_storage_path = self.get_camera_storage()
+
+        if camera_storage_state:
+            DCIM_path = os.path.join(active_camera_storage_path, 'DCIM')
+            pic_folders_path = self.get_pic_folders_path()
+            if pic_folders_path:
+                for folder in pic_folders_path:
+                    folder_path = os.path.join(DCIM_path, folder)
+                    for file in os.listdir(folder_path):
+                        if file.endswith(('.ARW', '.NEF', '.CR3')):
+                            nRAW += 1
+                            nPic += 1
+                        elif file.endswith(('.jpg', '.JPG')):
+                            nJPEG += 1
+                            nPic += 1
+                return [str(nPic), str(nRAW), str(nJPEG)]
+            else:
+                return ['0','0','0']
+        else:
+            return ['--','--','--']
+
     def get_external_storage(self):
         '''Returns the state of the external storage connexion'''
         with open(self.external_storage_json, 'r') as f:
@@ -84,7 +122,7 @@ class Utils():
         # Retrieve Data
         camera_storage_state, active_storage_path = self.get_camera_storage()
         external_storage_status, _ = self.get_external_storage()
-        tooltip_text = active_storage_path[0] if active_storage_path else "Aucun dispositif connecté"
+        tooltip_text = active_storage_path if active_storage_path else "Aucun dispositif connecté"
         self.update_label(ui.camStoStatusLabel, "💾 : 🟢" if camera_storage_state else "💾 : 🔴", tooltip_text)
         self.update_label(ui.extStoStatusLabel, "🗡️ : 🟢" if external_storage_status else "🗡️ : 🔴")
 

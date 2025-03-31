@@ -48,7 +48,7 @@ class SortingPage(QMainWindow):
         self.ui.okBtn.clicked.connect(lambda: self.ok_btn_is_cliked())
         self.ui.cancelBtn.clicked.connect(lambda: self.on_storage_cancel())
         #Other attributes
-        self.camera_storage_state, self.camera_storage_device = self.utils.get_camera_storage()
+        self.camera_storage_state, self.camera_storage_path = self.utils.get_camera_storage()
         self.external_storage_state, self.external_storage_path = self.utils.get_external_storage()
         #Timers Initialization
         self.gen_update_tm = gen_update_tm
@@ -67,7 +67,7 @@ class SortingPage(QMainWindow):
     @pyqtSlot()
     def update_ui(self):
         ''' Update every ui element at the timer timeout '''
-        self.camera_storage_state, self.camera_storage_device = self.utils.get_camera_storage()
+        self.camera_storage_state, self.camera_storage_path = self.utils.get_camera_storage()
         self.external_storage_state, self.external_storage_path = self.utils.get_external_storage()
         self.utils.update_status_labels(self.ui)
 
@@ -92,31 +92,26 @@ class SortingPage(QMainWindow):
     def separation(self):
         ''' Process séparation '''
         if self.camera_storage_state:
-            pic_folders_path = self.get_pic_folders_path() 
+            pic_folders_path = self.utils.get_pic_folders_path() 
             if pic_folders_path:
-                if not self.utils.pics_in_folder(self.JPEG_FOLDER_PATH):
-                    self.ui.stateLabel.setText("Séparation en cours ...")
-                    self.ui.rangementBtn.setDisabled(True)
-                    self.ui.suppressionBtn.setDisabled(True)
-                    # Transfer photos
-                    worker = SeparationWorker(pic_folders_path,self.JPEG_FOLDER_PATH)
-                    worker.signal.finished.connect(self.on_separation_finished)
-                    self.threadpool.globalInstance().start(worker)
+                if self.utils.get_storage_data()[2] != '0':  # Number of jpeg
+                    if not self.utils.pics_in_folder(self.JPEG_FOLDER_PATH):
+                        self.ui.stateLabel.setText("Séparation en cours ...")
+                        self.ui.rangementBtn.setDisabled(True)
+                        self.ui.suppressionBtn.setDisabled(True)
+                        # Transfer photos
+                        worker = SeparationWorker(pic_folders_path,self.JPEG_FOLDER_PATH)
+                        worker.signal.finished.connect(self.on_separation_finished)
+                        self.threadpool.globalInstance().start(worker)
+                    else:
+                        self.display_error_message("Photos dans le dossier de tri")
                 else:
-                    self.display_error_message("Photos dans le dossier de tri")
+                    self.display_error_message("Aucun jpeg à séparer dans la carte SD \n\nPassez directement à l'étape de tri")
             else:
-                self.display_error_message("Photos non trouvé dans la carte SD")
-                return
+                self.display_error_message("Aucune photos dans la carte SD")
         else:
             self.display_error_message("Carte SD manquante")
-            return
-
-    def get_pic_folders_path(self):
-        '''Return the list of paths to folders containing the photos'''
-        DCIM_path = os.path.join(self.camera_storage_device[0], 'DCIM')
-        if os.path.exists(DCIM_path):
-            return [os.path.join(DCIM_path, folder) for folder in os.listdir(DCIM_path) if os.path.isdir(os.path.join(DCIM_path, folder))]
-        return None
+        return
 
     def pics_in_JPEG_FOLDER(self):
         '''Returns True if pics are already in the self.JPEG_FOLDER_PATH'''
@@ -151,7 +146,7 @@ class SortingPage(QMainWindow):
     @pyqtSlot()
     def ok_btn_is_cliked(self):  
         '''Retrieve the data and start the storage'''
-        pic_folders_path = self.get_pic_folders_path()
+        pic_folders_path = self.utils.get_pic_folders_path()
         if pic_folders_path:
             event_name = self.ui.eventNameLine.text().strip()
             if event_name:
@@ -233,17 +228,28 @@ class SortingPage(QMainWindow):
     @pyqtSlot()
     def removing(self):
         ''''''
-        if not self.camera_storage_state:
+        if self.camera_storage_state:
+            # get the list of the paths to the photos to remove
+            jpegs = self.utils.get_glob_list(self.JPEG_FOLDER_PATH)
+            DCIM_path = os.path.join(self.camera_storage_path, 'DCIM')
+            if os.path.exists(DCIM_path): 
+                pic_folders = self.utils.get_glob_list(DCIM_path)
+            else:
+                pic_folders = []
+            if jpegs or pic_folders:
+                # UI update
+                self.ui.stateLabel.setText("Suppression en cours ...")
+                self.ui.separationBtn.setDisabled(True)
+                self.ui.rangementBtn.setDisabled(True)
+                # Remove photos
+                worker = RemoveWorker(jpegs, pic_folders)
+                worker.signal.error.connect(self.on_removing_error)
+                worker.signal.finished.connect(self.on_removing_finished)
+                self.threadpool.globalInstance().start(worker)
+            else:
+                self.display_error_message(f"Aucune photo à supprimer")
+        else:
             self.display_error_message("Carte SD manquante")
-            return
-        self.ui.stateLabel.setText("Suppression en cours ...")
-        self.ui.separationBtn.setDisabled(True)
-        self.ui.rangementBtn.setDisabled(True)
-        # Transfer photos
-        worker = RemoveWorker(self.JPEG_FOLDER_PATH, self.camera_storage_device)
-        worker.signal.error.connect(self.on_removing_error)
-        worker.signal.finished.connect(self.on_removing_finished)
-        self.threadpool.globalInstance().start(worker)
             
     @pyqtSlot(str)
     def on_removing_error(self, message):
@@ -260,9 +266,7 @@ class SortingPage(QMainWindow):
         self.reset_state_label()
         self.ui.separationBtn.setEnabled(True)
         self.ui.rangementBtn.setEnabled(True)
-        show_in_file_manager(os.path.join(self.utils.get_camera_storage()[1][0], 'DCIM'))
-
-
+        show_in_file_manager(os.path.join(self.utils.get_camera_storage()[1], 'DCIM'))
     
     def display_success_message(self, message):
         '''Dsiplay a QMessageBox with the success message'''
