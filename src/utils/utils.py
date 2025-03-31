@@ -26,13 +26,13 @@ class Utils():
             return(True, path)
         return(False, None)
 
-    def get_external_storage_base_dir(self):  # A TESTER
+    def get_external_storage_base_dir(self): 
         '''Returns the path to the base dir in the external storage'''
         with open(self.external_storage_json, 'r') as f:
             external_storage = json.load(f)
         return external_storage['base_dir']
 
-    def get_external_storage_event_dirs(self):  # A TESTER
+    def get_external_storage_event_dirs(self):
         '''Returns the list of dir name and path part of the event dir'''
         with open(self.external_storage_json, 'r') as f:
             external_storage = json.load(f)

@@ -2,13 +2,14 @@ import datetime
 import time
 import os
 from dotenv import load_dotenv
+from showinfm import show_in_file_manager
 from src.ui.sorting_page import Ui_SortingPage
 from src.utils.utils import Utils
 from src.utils.workers import SeparationWorker, StorageWorker, RemoveWorker
-from PyQt5.QtCore import pyqtSlot, Qt, QTimer, QThreadPool
+from PyQt5.QtCore import pyqtSlot, QTimer, QThreadPool
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QLabel
-from os import remove, mkdir, path, getenv
+from PyQt5.QtWidgets import QMainWindow, QMessageBox
+from os import getenv
 # from PIL import Image, ExifTags
 
 
@@ -128,6 +129,7 @@ class SortingPage(QMainWindow):
         self.action_timer.start(3000)
         self.ui.rangementBtn.setEnabled(True)
         self.ui.suppressionBtn.setEnabled(True)
+        show_in_file_manager(self.JPEG_FOLDER_PATH)
 
     @pyqtSlot()
     def storage(self):  # A TESTER
@@ -200,8 +202,8 @@ class SortingPage(QMainWindow):
         self.display_error_message(message)
         self.on_storage_cancel()
 
-    @pyqtSlot()
-    def on_storage_finished(self):  
+    @pyqtSlot(str)
+    def on_storage_finished(self, event_path):  
         '''Set ui back to normal status and display message'''
         self.display_success_message("Rangement terminé !")
         self.reset_state_label()
@@ -214,6 +216,7 @@ class SortingPage(QMainWindow):
         if self.ui.modeCheckBox.isChecked():  # Semi Automatic mode
             # Future update
             pass
+        show_in_file_manager(event_path)
 
     @pyqtSlot()
     def on_storage_cancel(self):
@@ -257,6 +260,7 @@ class SortingPage(QMainWindow):
         self.reset_state_label()
         self.ui.separationBtn.setEnabled(True)
         self.ui.rangementBtn.setEnabled(True)
+        show_in_file_manager(os.path.join(self.utils.get_camera_storage()[1][0], 'DCIM'))
 
 
     

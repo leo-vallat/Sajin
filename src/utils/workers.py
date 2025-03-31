@@ -7,7 +7,7 @@ from PyQt5.QtCore import QRunnable, pyqtSlot, QObject, pyqtSignal
 from src.utils.utils import Utils
 
 class Signal(QObject):
-    finished = pyqtSignal()
+    finished = pyqtSignal(str)
     error = pyqtSignal(str)
 
 class SeparationWorker(QRunnable):  
@@ -26,7 +26,7 @@ class SeparationWorker(QRunnable):
             jpeg_paths += [path for path in pic_paths if path.lower().endswith('.jpg')]
         for path in jpeg_paths:
             shutil.copy(path, os.path.join(self.JPEG_FOLDER_PATH, os.path.basename(path)))
-        self.signal.finished.emit()
+        self.signal.finished.emit('')
         return
 
 
@@ -83,7 +83,7 @@ class StorageWorker(QRunnable):
                 self.signal.error.emit(f"Erreur lors du déplacement des photos : {e}")
                 return
 
-        self.signal.finished.emit()
+        self.signal.finished.emit(self.utils.get_event_dir_path(self.day, self.month, self.year, self.event_name))
         return
     
     def store_raw_and_jpeg(self, part='full'):
@@ -175,7 +175,7 @@ class RemoveWorker(QRunnable):
         except Exception as e:
             self.signal.error.emit(f"Erreur lors de la suppression des photos : {e}")
         else:
-            self.signal.finished.emit()
+            self.signal.finished.emit('')
         
     def remove_element_from_dir(self, glob_list):
         for element in glob_list:
