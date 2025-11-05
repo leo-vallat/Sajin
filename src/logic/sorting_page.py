@@ -262,7 +262,8 @@ class SortingPage(QMainWindow):
         self.ui.separationBtn.setEnabled(True)
         self.ui.rangementBtn.setEnabled(True)
         show_in_file_manager(os.path.join(self.utils.get_camera_storage()[1], 'DCIM'))
-    
+        show_in_file_manager(self.JPEG_FOLDER_PATH)
+
     def display_success_message(self, message):
         '''Dsiplay a QMessageBox with the success message'''
         error_popup = QMessageBox()
