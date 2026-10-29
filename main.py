@@ -2,7 +2,6 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import QTimer
 import sys
 from src.logic.homepage import HomePage  
-from src.logic.sorting_page import SortingPage
 
 
 class MainApp(QtWidgets.QMainWindow):
@@ -14,11 +13,7 @@ class MainApp(QtWidgets.QMainWindow):
         self.setCentralWidget(self.stacked_widget)
 
         self.homepage = HomePage(self.stacked_widget, self.gen_update_timer)
-        self.sorting_page = SortingPage(self.stacked_widget, self.gen_update_timer)
-
         self.stacked_widget.addWidget(self.homepage)  
-        self.stacked_widget.addWidget(self.sorting_page)  
-        
         self.stacked_widget.setCurrentIndex(0)  # Affiche la page d'accueil par défaut
 
 if __name__ == "__main__":

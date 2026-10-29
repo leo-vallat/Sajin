@@ -1,5 +1,5 @@
 {
     "external_storage": "/Volumes/Andúril",
     "base_dir": "/Volumes/Andúril/Prod/Photo",
-    "event_dirs": ["Rt", "Jpeg", "Raw"]
+    "event_dirs": ["RT", "JPEG", "RAW"]
 }

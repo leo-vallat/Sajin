@@ -42,8 +42,8 @@ class StorageWorker(QRunnable):
         self.semi_auto_mode = semi_auto_mode
         self.initialize_date_attr(event_date)
         self.part = part
-        self.external_storage_jpeg_path = os.path.join(self.utils.get_event_dir_path(self.day, self.month, self.year, self.event_name), 'Jpeg')
-        self.external_storage_raw_path = os.path.join(self.utils.get_event_dir_path(self.day, self.month, self.year, self.event_name), 'Raw')
+        self.external_storage_jpeg_path = os.path.join(self.utils.get_event_dir_path(self.day, self.month, self.year, self.event_name), 'JPEG')
+        self.external_storage_raw_path = os.path.join(self.utils.get_event_dir_path(self.day, self.month, self.year, self.event_name), 'RAW')
 
     def initialize_date_attr(self, UI_event_date):
         '''Initialize date, month and day based on event_date'''

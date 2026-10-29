@@ -124,8 +124,8 @@ class Utils():
         camera_storage_state, active_storage_path = self.get_camera_storage()
         external_storage_status, _ = self.get_external_storage()
         tooltip_text = active_storage_path if active_storage_path else "Aucun dispositif connecté"
-        self.update_label(ui.camStoStatusLabel, "💾 : 🟢" if camera_storage_state else "💾 : 🔴", tooltip_text)
-        self.update_label(ui.extStoStatusLabel, "🗡️ : 🟢" if external_storage_status else "🗡️ : 🔴")
+        self.update_label(ui.camStoStatusLabel, "💾" if camera_storage_state else "", tooltip_text)
+        self.update_label(ui.extStoStatusLabel, "🗡️" if external_storage_status else "")
 
     def update_label(self, label, new_text, tooltip=None):
         '''Update a QLabel only if the text or tooltip needs to change.'''
