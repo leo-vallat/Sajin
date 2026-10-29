@@ -1,5 +1,4 @@
 import datetime
-import time
 import os
 from dotenv import load_dotenv
 from showinfm import show_in_file_manager
@@ -10,6 +9,8 @@ from PyQt5.QtCore import pyqtSlot, QTimer, QThreadPool
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow, QMessageBox
 from os import getenv
+
+
 
 class HomePage(QMainWindow):
     """Page d'accueil"""
@@ -57,10 +58,12 @@ class HomePage(QMainWindow):
         self.action_timer.timeout.connect(lambda: self.reset_state_label())
         print("homepage initialized")
 
+
     @pyqtSlot()
     def eventNameLine_is_filled(self):
         '''Returns True if the text is filled'''
         return self.ui.okBtn.setEnabled(bool(self.ui.eventNameLine.text().strip()))
+
 
     @pyqtSlot()
     def update_ui(self):
@@ -70,12 +73,14 @@ class HomePage(QMainWindow):
         self.utils.update_status_labels(self.ui)
         self.update_storage_data()
 
+
     def update_storage_data(self):
         ''' Update the values of card(1,2,3)InfoLabel '''
         storage_data = self.utils.get_storage_data()
         self.ui.card1InfoLabel.setText(storage_data[0])
         self.ui.card2InfoLabel.setText(storage_data[1])
         self.ui.card3InfoLabel.setText(storage_data[2])
+
 
     @pyqtSlot(int)
     def toggle_widgets(self, state):
@@ -84,15 +89,18 @@ class HomePage(QMainWindow):
         self.ui.dateEdit.setVisible(is_checked)
         self.ui.nPicLine.setVisible(is_checked)
 
+
     @pyqtSlot()
     def display_date_edit(self):
         '''Set dateEdit visible even is modeCheckBox is not checked'''
         self.ui.dateEdit.setVisible(True)
 
+
     @pyqtSlot()
     def hide_date_edit(self):
         '''set dateEdit hidden'''
         self.ui.dateEdit.setHidden(True)
+
 
     @pyqtSlot()
     def separation(self):
@@ -120,8 +128,6 @@ class HomePage(QMainWindow):
             self.display_error_message("Carte SD manquante")
         return
 
-    def pics_in_JPEG_FOLDER(self):
-        '''Returns True if pics are already in the self.JPEG_FOLDER_PATH'''
         
     @pyqtSlot()
     def on_separation_finished(self):
@@ -132,6 +138,7 @@ class HomePage(QMainWindow):
         self.ui.rangementBtn.setEnabled(True)
         self.ui.suppressionBtn.setEnabled(True)
         show_in_file_manager(self.JPEG_FOLDER_PATH)
+
 
     @pyqtSlot()
     def storage(self):
@@ -149,6 +156,7 @@ class HomePage(QMainWindow):
         else:
             self.display_error_message("Carte SD manquante")
             return           
+
 
     @pyqtSlot()
     def ok_btn_is_cliked(self):  
@@ -188,6 +196,7 @@ class HomePage(QMainWindow):
             self.on_storage_cancel()          
         return
 
+
     def get_radio_value(self):
         '''Return the photo format selected'''
         if self.ui.rawJpegRadio.isChecked():
@@ -197,11 +206,13 @@ class HomePage(QMainWindow):
         elif self.ui.jpegOnlyRadio.isChecked():
             return 'J'
 
+
     @pyqtSlot(str)
     def on_storage_error(self, message):
         ''''''
         self.display_error_message(message)
         self.on_storage_cancel()
+
 
     @pyqtSlot(str)
     def on_storage_finished(self, event_path):  
@@ -217,6 +228,7 @@ class HomePage(QMainWindow):
             pass
         show_in_file_manager(event_path)
 
+
     @pyqtSlot()
     def on_storage_cancel(self):
         ''''''
@@ -228,6 +240,7 @@ class HomePage(QMainWindow):
         if self.ui.modeCheckBox.isChecked():  # Semi Automatic mode
             # Future update
             pass
+
 
     @pyqtSlot()
     def removing(self):
@@ -254,7 +267,8 @@ class HomePage(QMainWindow):
                 self.display_error_message(f"Aucune photo à supprimer")
         else:
             self.display_error_message("Carte SD manquante")
-            
+
+    
     @pyqtSlot(str)
     def on_removing_error(self, message):
         ''''''
@@ -262,7 +276,8 @@ class HomePage(QMainWindow):
         self.reset_state_label()
         self.ui.separationBtn.setEnabled(True)
         self.ui.rangementBtn.setEnabled(True)
-    
+
+
     @pyqtSlot()
     def on_removing_finished(self):
         self.display_success_message("Suppression terminée !")
@@ -271,6 +286,7 @@ class HomePage(QMainWindow):
         self.ui.rangementBtn.setEnabled(True)
         show_in_file_manager(os.path.join(self.utils.get_camera_storage()[1], 'DCIM'))
         show_in_file_manager(self.JPEG_FOLDER_PATH)
+
 
     def display_success_message(self, message):
         '''Dsiplay a QMessageBox with the success message'''
@@ -281,6 +297,7 @@ class HomePage(QMainWindow):
         error_popup.setStandardButtons(QMessageBox.StandardButton.Ok)
         error_popup.exec_()
 
+
     def display_error_message(self, message):
         '''Display a QMessageBox with the error message'''
         error_popup = QMessageBox()
@@ -290,9 +307,11 @@ class HomePage(QMainWindow):
         error_popup.setStandardButtons(QMessageBox.StandardButton.Ok)
         error_popup.exec_()
 
+
     def reset_state_label(self):
         '''Reinitialize the state label to "".'''
         self.ui.stateLabel.setText("")
+
 
 ###################################################################################################
 ## BUG A CORRIGER

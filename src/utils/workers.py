@@ -5,9 +5,11 @@ from PyQt5.QtCore import QRunnable, pyqtSlot, QObject, pyqtSignal
 from src.utils.utils import Utils
 
 
+
 class Signal(QObject):
     finished = pyqtSignal(str)
     error = pyqtSignal(str)
+
 
 
 class SeparationWorker(QRunnable):  
@@ -17,6 +19,7 @@ class SeparationWorker(QRunnable):
         self.signal = Signal()
         self.pic_folders_path = pic_folders_path
         self.JPEG_FOLDER_PATH = JPEG_FOLDER_PATH
+
 
     @pyqtSlot()
     def run(self):
@@ -28,6 +31,7 @@ class SeparationWorker(QRunnable):
             shutil.copy(path, os.path.join(self.JPEG_FOLDER_PATH, os.path.basename(path)))
         self.signal.finished.emit('')
         return
+
 
 
 class StorageWorker(QRunnable):
@@ -45,6 +49,7 @@ class StorageWorker(QRunnable):
         self.external_storage_jpeg_path = os.path.join(self.utils.get_event_dir_path(self.day, self.month, self.year, self.event_name), 'JPEG')
         self.external_storage_raw_path = os.path.join(self.utils.get_event_dir_path(self.day, self.month, self.year, self.event_name), 'RAW')
 
+
     def initialize_date_attr(self, UI_event_date):
         '''Initialize date, month and day based on event_date'''
         if not self.semi_auto_mode:  # Auto mode
@@ -58,6 +63,7 @@ class StorageWorker(QRunnable):
         else:  # Semi auto mode
             event_date = UI_event_date.split('/').reverse()
         self.year, self.month, self.day = event_date  # Initialize day, month, year
+
 
     @pyqtSlot()
     def run(self):
@@ -84,6 +90,7 @@ class StorageWorker(QRunnable):
 
         self.signal.finished.emit(self.utils.get_event_dir_path(self.day, self.month, self.year, self.event_name))
         return
+
     
     def store_raw_and_jpeg(self, part='full'):
         '''FULL PART ONLY FOR NOW'''
@@ -99,6 +106,7 @@ class StorageWorker(QRunnable):
                 new_raw_path = os.path.join(self.external_storage_raw_path, raw_path.split('/')[-1].strip())
                 shutil.copy(raw_path, new_raw_path)  # Copy raw
                 nr += 1
+
 
     def store_jpeg(self, part='full'):  # A TESTER
         '''FULL PART ONLY FOR NOW'''
@@ -117,6 +125,7 @@ class StorageWorker(QRunnable):
             new_raw_path = os.path.join(self.external_storage_raw_path, raw_path.split('/')[-1].strip())
             shutil.copy(raw_path, new_raw_path)  # Copy raw
             nr += 1
+
 
     def create_event_dirs(self):
         '''
@@ -145,6 +154,7 @@ class StorageWorker(QRunnable):
             return
 
 
+
 class RemoveWorker(QRunnable):
     def __init__(self, jpegs, pic_folders):
         super().__init__()
@@ -152,6 +162,7 @@ class RemoveWorker(QRunnable):
         self.signal = Signal()
         self.jpegs = jpegs
         self.pic_folders = pic_folders
+
     
     @pyqtSlot()
     def run(self):        
@@ -163,9 +174,11 @@ class RemoveWorker(QRunnable):
             else:
                 self.signal.finished.emit('')
 
+
     def remove_element_from_dir(self, glob_list):
         for element in glob_list:
             os.remove(element)
+
 
     def remove_element_from_sd_card(self, glob_list):
         for element in glob_list:
